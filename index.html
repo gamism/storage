@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<head lang="zh-tw">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	<title>Bootstrap 101 Template</title>
+
+	<!-- Bootstrap -->
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/bootstrap-datepicker3.min.css" rel="stylesheet">
+
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<script src="js/jquery.1.11.2.min.js"></script>
+	<!-- Include all compiled plugins (below), or include individual files as needed -->
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/bootstrap-datepicker.min.js"></script>
+	<script src="locales/bootstrap-datepicker.zh-TW.min.js"></script>
+</head>
+<body>
+<h1>Hello, world!</h1>
+
+<table id="storage" class="table table-condensed table-bordered table-hover">
+	<tr>
+		<th rowspan="2">品名</th>
+		<th rowspan="2">規格</th>
+		<th rowspan="2">日期</th>
+		<th colspan="2">進倉</th>
+		<th colspan="2">出倉</th>
+		<th colspan="2">累積存量</th>
+		<th rowspan="2">儲存期間</th>
+		<th rowspan="2">天數</th>
+		<th rowspan="2">單價</th>
+		<th rowspan="2">倉租</th>
+		<th rowspan="2">小計</th>
+		<th rowspan="2">裝卸費</th>
+		<th rowspan="2"><input class="btn btn-lg btn-primary" type="button" value="+" onclick="addDelRow(this, 'top_add')"/></th>
+	</tr>
+	<tr>
+		<td>數量</td>
+		<td>才積</td>
+		<td>數量</td>
+		<td>才積</td>
+		<td>數量</td>
+		<td>才積</td>
+	</tr>
+	<tr class="danger" style="display: none;">
+		<td>1</td>
+		<td>2</td>
+		<td>3</td>
+		<td>4</td>
+		<td>5</td>
+		<td>6</td>
+		<td>7</td>
+		<td>8</td>
+		<td>9</td>
+		<td>10</td>
+		<td>11</td>
+		<td>12</td>
+		<td>13</td>
+		<td>14</td>
+		<td>15</td>
+		<td>16</td>
+	</tr>
+	<tr>
+		<td colspan="12" class="text-right"></td>
+		<td>0</td>
+		<td>0</td>
+		<td>0</td>
+		<td></td>
+	</tr>
+</table>
+<div class="text-right">
+	<input type="button" class="btn-lg " value="Submit"/>
+</div>
+
+
+<script>
+	function myobj(format){
+		this.opt = {
+			format: format || "mm/dd",
+			clearBtn: true,
+			language: "zh-TW",
+			orientation: "top auto"
+		}
+	}
+
+	opt1 = new myobj();
+	opt2 = new myobj('mm/dd/yyyy');
+	$('.datepicker').datepicker(opt1.opt);
+	$('.input-daterange').datepicker(opt2.opt).on('hide', function(e){
+		daydiff(e)
+	});
+
+	function daydiff(e)
+	{
+		var row = e.currentTarget.parentNode.parentNode;
+//		console.info('row1 ',$(e.currentTarget).children()[2].value);
+		var miStart=Date.parse(($(e.currentTarget).children()[0].value).replace(/\-/g,'/'));
+		var miEnd=Date.parse(($(e.currentTarget).children()[2].value).replace(/\-/g,'/'));
+		if(miEnd && miStart)
+		{
+			var days = (miEnd - miStart) / (1000 * 24 * 3600);
+			row.cells[10].innerHTML = days + 1;
+		}
+	}
+	function addDelRow(row, method)
+	{
+		if(method == 'top_add')
+		{
+			var t = document.getElementById('storage'), tr;
+			tr = t.insertRow(t.rows.length - 1);
+			tr.innerHTML = genRow();
+		}
+		if(method == 'add')
+		{
+			var t = document.getElementById('storage'), tr;
+			tr = t.insertRow(row.parentNode.parentNode.rowIndex + 1);
+			tr.innerHTML = genRow();
+		}
+		if(method == 'del')
+		{
+			document.getElementsByTagName('table')[0].deleteRow(row.parentNode.parentNode.rowIndex);
+			quickcount()
+		}
+		$('.datepicker').datepicker(opt1.opt);
+		$('.input-daterange').datepicker(opt2.opt).on('hide', function(e){
+			daydiff(e)
+		});
+	}
+	function storagefee(r)
+	{
+		var row,day,price,qty;
+		row = r.parentNode.parentNode;
+		day = row.cells[10].innerHTML;
+		price = $(row.cells[11]).children().val();
+		qty = $(row.cells[8]).children().val();
+//		console.info('data %s %s %s',day,price,qty);
+		row.cells[12].innerHTML = Math.round((qty/1000) * day * price);
+		quickcount();
+	}
+	function quickcount()
+	{
+		var t = document.getElementById('storage'), sum = 0, unloadSum = 0;
+		for(var i = 3; i < t.rows.length; i++)
+		{
+			if(i != t.rows.length - 1)
+			{
+				sum += parseInt(t.rows[i].cells[12].innerHTML);
+				unloadSum += (parseInt($(t.rows[i].cells[14]).children().val()))?parseInt($(t.rows[i].cells[14]).children().val()):0;
+			}
+		}
+//		console.info('d ', t.rows[t.rows.length -1].cells[1]);
+		t.rows[t.rows.length - 1].cells[1].innerHTML = sum;
+		t.rows[t.rows.length - 1].cells[3].innerHTML = (unloadSum)?unloadSum:0;
+	}
+	function genRow()
+	{
+		var i,s = '';
+		s += '<tr>';
+		for(i = 1;i<=16;i++)
+		{
+			if(i == 16)
+			{
+				s += '<td><input class="btn btn-sm btn-primary" type="button" value="+" onclick="addDelRow(this, \'add\')"/> <input class="btn btn-sm btn-danger" type="button" value=" -" onclick="addDelRow(this, \'del\')"/></td>';
+			}
+			else if($.inArray(i, [1,2])>-1)
+			{
+				s += '<td><input type="text" size="10"/></td>'
+			}
+			else if(i == 3)
+			{
+				s += '<td><input type="text" type="text" class="form-control datepicker input-sm" size="3"></td>';
+			}
+			else if(i == 10)
+			{
+				s += '<td><div class="input-daterange input-group" id="datepicker">' +
+				'<input type="text" class="input-sm form-control" id="start" size="4"/>' +
+				'<span class="input-group-addon">-</span>' +
+				'<input type="text" class="input-sm form-control" id="end" size="4"/>' +
+				'</div></td>';
+			}
+			else if($.inArray(i, [4,5,6,7,8,9])>-1)
+			{
+				s += '<td><input type="text" size="5"/></td>'
+			}
+			else if($.inArray(i, [12,15])>-1)
+			{
+				s += '<td><input type="text" size="5" onblur="storagefee(this)"/></td>'
+			}
+			else
+			{
+				s += '<td></td>';
+			}
+
+		}
+		s += '</tr>';
+		return s;
+	}
+</script>
+</body>
+</html>
