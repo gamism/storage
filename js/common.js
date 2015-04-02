@@ -12,6 +12,164 @@
  * http://openexchangerates.github.io/accounting.js/
  */
 
+function getById(id)
+{
+	return document.getElementById(id)
+}
+
+function queryparser()
+{
+	var data = {}, s;
+	s = window.location.search.split('?');
+	if(s.length > 1)
+	{
+		$.each(s[1].split('&'), function(k, v){
+			data[v.split('=')[0]] = v.split('=')[1];
+		});
+	}
+	return data;
+}
+
+function feecount(table, cell)
+{
+	var rows = getById(table).rows, sum = 0;
+	$.each(rows, function(k, v){
+		//if($(v).children()[cell].children())
+		{
+			console.info('v ', $(v).children()[cell]);
+		}
+	})
+}
+
+function genRow(id)
+{
+	id = id || 'storage';
+	var i,s = '';
+	if(id == 'summary')
+	{
+		s += '<tr>';
+		for (i = 0; i < 4; i++)
+		{
+			if(i==3)
+			{
+				s += '<td nowrap class="text-right"><input class="btn btn-sm btn-primary" type="button" value="+" onclick="addDelRow(this, \'summary\', \'add\')"/> <input class="btn btn-sm btn-danger" type="button" value=" -" onclick="addDelRow(this, \'summary\', \'del\')"/></td>';
+			}
+			else if(i == 1)
+			{
+				s += '<td><input class="form-control" type="text" onblur="feecount(\'summary\')"/></td>';
+			}
+			else
+			{
+				s += '<td><input class="form-control" type="text"/></td>';
+			}
+		}
+		s += '</tr>';
+	}
+	if(id == 'stock')
+	{
+		s += '<tr class="item_content">';
+		for (i = 0; i < 8; i++)
+		{
+			if($.inArray(i, [0,2,6]) > -1)
+			{
+				s += '<td><input class="form-control" type="text"/></td>';
+			}
+			else if($.inArray(i, [3,4,5]) > -1)
+			{
+				s += '<td><input class="form-control" type="text" onblur="feecount(\'stock\', '+i+')"/></td>';
+			}
+			else if (i == 7)
+			{
+				s += '<td nowrap class="text-right"><input class="btn btn-sm btn-primary" type="button" value="+" onclick="addDelRow(this, \'stock\', \'add\')"/> <input class="btn btn-sm btn-danger" type="button" value=" -" onclick="addDelRow(this, \'stock\', \'del\')"/></td>';
+			}
+			else
+			{
+				s += '<td><input type="text" size="10"/></td>'
+			}
+		}
+		s += '</tr>';
+	}
+	if(id == 'storage')
+	{
+		s += '<tr class="item_content">';
+		for (i = 1; i <= 16; i++)
+		{
+			if (i == 16)
+			{
+				s += '<td nowrap class="text-right"><input class="btn btn-sm btn-primary" type="button" value="+" onclick="addDelRow(this, \'storage\', \'add\')"/> <input class="btn btn-sm btn-danger" type="button" value=" -" onclick="addDelRow(this, \'storage\', \'del\')"/></td>';
+			}
+			else if ($.inArray(i, [1]) > -1)
+			{
+				s += '<td><input class="form-control" type="text" size="10"/></td>'
+			}
+			else if ($.inArray(i, [2]) > -1)
+			{
+				s += '<td><input type="text" size="10"/>' +
+				'<select onchange="storagefee(this)">' +
+				'<option value="0">數量</option>' +
+				'<option value="1">才積</option>' +
+				'</select>' +
+				'</td>'
+			}
+			else if (i == 3)
+			{
+				s += '<td><input type="text" type="text" class="datepicker input-sm" size="3"></td>';
+			}
+			else if (i == 10)
+			{
+				s += '<td><div class="input-daterange input-group" id="datepicker">' +
+				'<input type="text" class="input-sm" id="start" size="5"/>' +
+				'<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>' +
+				'<input type="text" class="input-sm" id="end" size="5"/>' +
+				'</div></td>';
+			}
+			else if ($.inArray(i, [4, 5, 6, 7, 8]) > -1)
+			{
+				s += '<td><input type="text" size="5"/></td>'
+			}
+			else if ($.inArray(i, [9, 12, 15]) > -1)
+			{
+				s += '<td><input type="text" size="5" onblur="storagefee(this)"/></td>'
+			}
+			else
+			{
+				s += '<td></td>';
+			}
+
+		}
+		s += '</tr>';
+	}
+	return s;
+}
+
+function addDelRow(row, id, method)
+{
+	if(method == 'top_add')
+	{
+		var t = document.getElementById(id), tr;
+		tr = t.insertRow(t.rows.length - 1);
+		tr.innerHTML = genRow(id);
+	}
+	if(method == 'add')
+	{
+		var t = document.getElementById(id), tr;
+		tr = t.insertRow(row.parentNode.parentNode.rowIndex + 1);
+		tr.innerHTML = genRow(id);
+	}
+	if(method == 'del')
+	{
+		document.getElementById(id).deleteRow(row.parentNode.parentNode.rowIndex);
+		if(id == 'storage') quickcount()
+	}
+	if(id == 'storage')
+	{
+		$('.datepicker').datepicker(opt1.opt);
+		$('.input-daterange').datepicker(opt2.opt).on('hide', function(e){
+			daydiff(e)
+		});
+	}
+}
+
 (function(root, undefined) {
 
 	/* --- Setup --- */

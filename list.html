@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<head lang="zh-tw">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	<title>東勢倉儲有限公司</title>
+
+	<!-- Bootstrap -->
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/bootstrap-datepicker3.min.css" rel="stylesheet">
+
+	<script src="commonjs.php"></script>
+
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<script src="js/jquery.1.11.2.min.js"></script>
+	<!-- Include all compiled plugins (below), or include individual files as needed -->
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/bootstrap-datepicker.min.js"></script>
+	<script src="locales/bootstrap-datepicker.zh-TW.min.js"></script>
+	<script src="js/common.js"></script>
+</head>
+<body>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-6"><h1 id="companyTitle"></h1></div>
+		<div class="col-md-6 text-right">
+			<h1>
+				<button type="button" class="btn btn-warning btn-lg" onclick="location.href='index.html'">回客戶列表</button>
+			<button type="button" class="btn btn-warning btn-lg" onclick="(confirm('Do you want to logout system?'))?location.href='auth.php?action=logout':false">登出</button>
+			</h1>
+		</div>
+	</div>
+
+<table id="storage" class="table table-condensed table-bordered table-hover">
+	<tr class="bg-success">
+		<th rowspan="2" class="col-md-2">品名</th>
+		<th rowspan="2">規格 / 計價方式</th>
+		<th rowspan="2">日期</th>
+		<th colspan="2">進倉</th>
+		<th colspan="2">出倉</th>
+		<th colspan="2">累積存量</th>
+		<th rowspan="2">儲存期間</th>
+		<th rowspan="2">天數</th>
+		<th rowspan="2">單價</th>
+		<th rowspan="2">倉租</th>
+		<th rowspan="2">小計</th>
+		<th rowspan="2">裝卸費</th>
+		<th rowspan="2" class="text-right"><input class="btn btn-lg btn-primary" type="button" value="+" onclick="addDelRow(this, 'storage', 'top_add')"/></th>
+	</tr>
+	<tr class="bg-success">
+		<td>數量</td>
+		<td>才積</td>
+		<td>數量</td>
+		<td>才積</td>
+		<td>數量</td>
+		<td>才積</td>
+	</tr>
+	<tr class="danger" style="display: none;">
+		<td>1</td>
+		<td>2</td>
+		<td>3</td>
+		<td>4</td>
+		<td>5</td>
+		<td>6</td>
+		<td>7</td>
+		<td>8</td>
+		<td>9</td>
+		<td>10</td>
+		<td>11</td>
+		<td>12</td>
+		<td>13</td>
+		<td>14</td>
+		<td>15</td>
+		<td>16</td>
+	</tr>
+	<tr>
+		<td colspan="12" class="text-right"></td>
+		<td>0</td>
+		<td>0</td>
+		<td>0</td>
+		<td></td>
+	</tr>
+</table>
+	<table id="stock" class="table table-condensed table-bordered table-hover">
+		<tr class="bg-success">
+			<th class="col-md-2">櫃號</th>
+			<th>櫃型</th>
+			<th class="col-md-2">名稱</th>
+			<th>合 計</th>
+			<th>棧板 (個 )</th>
+			<th>撕(貼)標</th>
+			<th>備註</th>
+			<th class="text-right"><input class="btn btn-lg btn-primary" type="button" value="+" onclick="addDelRow(this, 'stock', 'top_add')"/></th>
+		</tr>
+		<tr>
+			<td colspan="3" class="text-right"></td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td></td>
+			<td></td>
+		</tr>
+	</table>
+	<table id="summary" class="table table-condensed table-bordered table-hover">
+		<tr class="bg-success">
+			<th class="col-md-4">項目</th>
+			<th class="col-md-1">金額</th>
+			<th class="col-md-5">備註</th>
+			<th class="text-right col-md-1"><input class="btn btn-lg btn-primary" type="button" value="+" onclick="addDelRow(this, 'summary', 'top_add')"/></th>
+		</tr>
+		<tr>
+			<td></td>
+			<td>0</td>
+			<td colspan="2"></td>
+		</tr>
+	</table>
+<div class="text-right" style="display: none;">
+	<input type="button" class="btn-lg " value="Submit"/>
+</div>
+</div>
+
+<script>
+	function myobj(format){
+		this.opt = {
+			format: format || "mm/dd",
+			clearBtn: true,
+			language: "zh-TW",
+			orientation: "top auto"
+		}
+	}
+
+	opt1 = new myobj();
+	opt2 = new myobj('mm/dd/yyyy');
+	$('.datepicker').datepicker(opt1.opt);
+	$('.input-daterange').datepicker(opt2.opt).on('hide', function(e){
+		daydiff(e)
+	});
+	getById('companyTitle').innerHTML = (queryparser().title)?queryparser().title:'Hello, world!';
+
+	function daydiff(e)
+	{
+		var row = e.currentTarget.parentNode.parentNode;
+//		console.info('row1 ',$(e.currentTarget).children()[2].value);
+		var miStart=Date.parse(($(e.currentTarget).children()[0].value).replace(/\-/g,'/'));
+		var miEnd=Date.parse(($(e.currentTarget).children()[2].value).replace(/\-/g,'/'));
+		if(miEnd && miStart)
+		{
+			var days = (miEnd - miStart) / (1000 * 24 * 3600);
+			row.cells[10].innerHTML = days + 1;
+		}
+	}
+
+	function storagefee(r)
+	{
+		var row,day,price,qty, amount, count_method;
+		row = r.parentNode.parentNode;
+		count_method = $(row.cells[1]).children()[1].value;
+		amount = $(row.cells[7]).children().val();
+		qty = $(row.cells[8]).children().val();
+		day = row.cells[10].innerHTML;
+		price = $(row.cells[11]).children().val();
+		console.info('data %s %s %s %s',day,price,qty, count_method);
+		row.cells[12].innerHTML = Math.round((((count_method=='0')?amount:qty)/1000) * day * price);
+		quickcount();
+	}
+	function quickcount()
+	{
+		var t = document.getElementById('storage'), sum = 0, unloadSum = 0;
+		for(var i = 3; i < t.rows.length; i++)
+		{
+			if(i != t.rows.length - 1)
+			{
+				sum += parseInt(t.rows[i].cells[12].innerHTML);
+				unloadSum += (parseInt($(t.rows[i].cells[14]).children().val()))?parseInt($(t.rows[i].cells[14]).children().val()):0;
+			}
+		}
+//		console.info('d ', t.rows[t.rows.length -1].cells[1]);
+		t.rows[t.rows.length - 1].cells[1].innerHTML = (sum)?sum:0;
+		t.rows[t.rows.length - 1].cells[3].innerHTML = (unloadSum)?unloadSum:0;
+	}
+</script>
+</body>
+</html>

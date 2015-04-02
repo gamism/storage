@@ -5,11 +5,13 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-	<title>Bootstrap 101 Template</title>
+	<title>東勢倉儲有限公司</title>
 
 	<!-- Bootstrap -->
 	<link href="css/bootstrap.min.css" rel="stylesheet">
 	<link href="css/bootstrap-datepicker3.min.css" rel="stylesheet">
+
+	<script src="commonjs.php"></script>
 
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -24,299 +26,79 @@
 	<script src="js/bootstrap-datepicker.min.js"></script>
 	<script src="locales/bootstrap-datepicker.zh-TW.min.js"></script>
 	<script src="js/common.js"></script>
-	<style>
-		.item_content:hover{
-			background: ghostwhite;
-		}
-	</style>
 </head>
 <body>
 <div class="container-fluid">
 	<div class="row">
-		<div class="col-md-6"><h1>Hello, world!</h1></div>
+		<div class="col-md-6"><h1>客戶列表</h1></div>
 		<div class="col-md-6 text-right">
 			<h1>
-			<button type="button" class="btn btn-warning btn-lg" onclick="(confirm('Do you want to logout system?'))?location.href='login.html':false">登出</button>
+			<button type="button" class="btn btn-warning btn-lg" onclick="(confirm('Do you want to logout system?'))?location.href='auth.php?action=logout':false">登出</button>
 			</h1>
 		</div>
 	</div>
-
-<table id="storage" class="table table-condensed table-bordered table-hover">
-	<tr class="bg-success">
-		<th rowspan="2" class="col-md-2">品名</th>
-		<th rowspan="2">規格 / 計價方式</th>
-		<th rowspan="2">日期</th>
-		<th colspan="2">進倉</th>
-		<th colspan="2">出倉</th>
-		<th colspan="2">累積存量</th>
-		<th rowspan="2">儲存期間</th>
-		<th rowspan="2">天數</th>
-		<th rowspan="2">單價</th>
-		<th rowspan="2">倉租</th>
-		<th rowspan="2">小計</th>
-		<th rowspan="2">裝卸費</th>
-		<th rowspan="2" class="text-right"><input class="btn btn-lg btn-primary" type="button" value="+" onclick="addDelRow(this, 'storage', 'top_add')"/></th>
-	</tr>
-	<tr class="bg-success">
-		<td>數量</td>
-		<td>才積</td>
-		<td>數量</td>
-		<td>才積</td>
-		<td>數量</td>
-		<td>才積</td>
-	</tr>
-	<tr class="danger" style="display: none;">
-		<td>1</td>
-		<td>2</td>
-		<td>3</td>
-		<td>4</td>
-		<td>5</td>
-		<td>6</td>
-		<td>7</td>
-		<td>8</td>
-		<td>9</td>
-		<td>10</td>
-		<td>11</td>
-		<td>12</td>
-		<td>13</td>
-		<td>14</td>
-		<td>15</td>
-		<td>16</td>
-	</tr>
-	<tr>
-		<td colspan="12" class="text-right"></td>
-		<td>0</td>
-		<td>0</td>
-		<td>0</td>
-		<td></td>
-	</tr>
-</table>
-	<table id="stock" class="table table-condensed table-bordered table-hover">
-		<tr class="bg-success">
-			<th class="col-md-2">櫃號</th>
-			<th>櫃型</th>
-			<th class="col-md-2">名稱</th>
-			<th>合 計</th>
-			<th>棧板 (個 )</th>
-			<th>撕(貼)標</th>
-			<th>備註</th>
-			<th class="text-right"><input class="btn btn-lg btn-primary" type="button" value="+" onclick="addDelRow(this, 'stock', 'top_add')"/></th>
-		</tr>
-		<tr>
-			<td colspan="3" class="text-right"></td>
-			<td>0</td>
-			<td>0</td>
-			<td>0</td>
-			<td></td>
-			<td></td>
-		</tr>
-	</table>
-	<table id="summary" class="table table-condensed table-bordered table-hover">
-		<tr class="bg-success">
-			<th class="col-md-4">項目</th>
-			<th class="col-md-1">金額</th>
-			<th class="col-md-5">備註</th>
-			<th class="text-right col-md-1"><input class="btn btn-lg btn-primary" type="button" value="+" onclick="addDelRow(this, 'summary', 'top_add')"/></th>
-		</tr>
-		<tr>
-			<td></td>
-			<td>0</td>
-			<td colspan="2"></td>
-		</tr>
-	</table>
-<div class="text-right" style="display: none;">
-	<input type="button" class="btn-lg " value="Submit"/>
+	<div>
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<input id="addCustomerBtn" type="button" class="form-control btn-danger" value="開啟新增客戶視窗" onclick="$('#addCustomer').toggle('fast', function(){getById('addCustomerBtn').value = ((this.style.display == 'none')?'開啟':'關閉') + '新增客戶視窗'})"/>
+			</div>
+			<div class="panel-body" id="addCustomer" style="display: none;">
+				<table class="table table-bordered">
+					<tr>
+						<th class="col-md-2 text-right bg-info">公司名稱</th>
+						<td><input type="text" class="form-control" id="newCompany"/></td>
+					</tr>
+					<tr>
+						<th class="col-md-2 text-right bg-info">電話</th>
+						<td><input type="text" class="form-control" id="newTel"/></td>
+					</tr>
+					<tr>
+						<th class="col-md-2 text-right bg-info">地址</th>
+						<td><input type="text" class="form-control" id="newAddr"/></td>
+					</tr>
+					<tr>
+						<td colspan="2" class="text-right"><button class="btn btn-success" onclick="addCustomer()">新增客戶</button></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<table class="table table-bordered" id="customerListTable">
+			<tr>
+				<th class="col-md-2">公司名稱</th>
+				<th class="col-md-2">電話</th>
+				<th class="col-md-4">地址</th>
+				<th class="col-md-2">產生出貨單</th>
+				<th class="col-md-2">Modify</th>
+			</tr>
+			<tbody id="customerList"></tbody>
+		</table>
+	</div>
 </div>
-</div>
-
 <script>
-	function myobj(format){
-		this.opt = {
-			format: format || "mm/dd",
-			clearBtn: true,
-			language: "zh-TW",
-			orientation: "top auto"
-		}
+	function addCustomer()
+	{
+		var com, tel, addr;
+		com = getById('newCompany');
+		tel = getById('newTel');
+		addr = getById('newAddr');
+		showCustomer(com.value, tel.value, addr.value);
+		//reset
+		com.value = ""; tel.value = ""; addr.value = "";
 	}
+	function showCustomer(com, tel, addr)
+	{
+		var str='',list;
+		list = $('#customerList');
 
-	opt1 = new myobj();
-	opt2 = new myobj('mm/dd/yyyy');
-	$('.datepicker').datepicker(opt1.opt);
-	$('.input-daterange').datepicker(opt2.opt).on('hide', function(e){
-		daydiff(e)
-	});
+		str += '<tr>' +
+		'<td>'+com+'</td>' +
+		'<td>'+tel+'</td>' +
+		'<td>'+addr+'</td>' +
+		'<td><input type="button" class="btn btn-primary" value="產生出貨單" onclick="location.href=\'list.html?'+ $.param({title:com})+'\'"/></td>' +
+		'<td><input type="button" class="btn btn-danger" value="編輯"/> <input type="button" class="btn btn-danger" value="刪除" onclick="if(confirm(\'Delete this company?\')){addDelRow(this, \'customerListTable\', \'del\')}"/></td>' +
+		'</tr>';
 
-	function daydiff(e)
-	{
-		var row = e.currentTarget.parentNode.parentNode;
-//		console.info('row1 ',$(e.currentTarget).children()[2].value);
-		var miStart=Date.parse(($(e.currentTarget).children()[0].value).replace(/\-/g,'/'));
-		var miEnd=Date.parse(($(e.currentTarget).children()[2].value).replace(/\-/g,'/'));
-		if(miEnd && miStart)
-		{
-			var days = (miEnd - miStart) / (1000 * 24 * 3600);
-			row.cells[10].innerHTML = days + 1;
-		}
-	}
-	function addDelRow(row, id, method)
-	{
-		if(method == 'top_add')
-		{
-			var t = document.getElementById(id), tr;
-			tr = t.insertRow(t.rows.length - 1);
-			tr.innerHTML = genRow(id);
-		}
-		if(method == 'add')
-		{
-			var t = document.getElementById(id), tr;
-			tr = t.insertRow(row.parentNode.parentNode.rowIndex + 1);
-			tr.innerHTML = genRow(id);
-		}
-		if(method == 'del')
-		{
-			document.getElementById(id).deleteRow(row.parentNode.parentNode.rowIndex);
-			quickcount()
-		}
-		if(id == 'storage')
-		{
-			$('.datepicker').datepicker(opt1.opt);
-			$('.input-daterange').datepicker(opt2.opt).on('hide', function(e){
-				daydiff(e)
-			});
-		}
-	}
-	function feecount(table)
-	{
-		var rows = document.getElementById(table).rows;
-		console.info('r ',rows);
-	}
-	function storagefee(r)
-	{
-		var row,day,price,qty, amount, count_method;
-		row = r.parentNode.parentNode;
-		count_method = $(row.cells[1]).children()[1].value;
-		amount = $(row.cells[7]).children().val();
-		qty = $(row.cells[8]).children().val();
-		day = row.cells[10].innerHTML;
-		price = $(row.cells[11]).children().val();
-		console.info('data %s %s %s %s',day,price,qty, count_method);
-		row.cells[12].innerHTML = Math.round((((count_method=='0')?amount:qty)/1000) * day * price);
-		quickcount();
-	}
-	function quickcount()
-	{
-		var t = document.getElementById('storage'), sum = 0, unloadSum = 0;
-		for(var i = 3; i < t.rows.length; i++)
-		{
-			if(i != t.rows.length - 1)
-			{
-				sum += parseInt(t.rows[i].cells[12].innerHTML);
-				unloadSum += (parseInt($(t.rows[i].cells[14]).children().val()))?parseInt($(t.rows[i].cells[14]).children().val()):0;
-			}
-		}
-//		console.info('d ', t.rows[t.rows.length -1].cells[1]);
-		t.rows[t.rows.length - 1].cells[1].innerHTML = (sum)?sum:0;
-		t.rows[t.rows.length - 1].cells[3].innerHTML = (unloadSum)?unloadSum:0;
-	}
-	function genRow(id)
-	{
-		id = id || 'storage';
-		var i,s = '';
-		if(id == 'summary')
-		{
-			s += '<tr>';
-			for (i = 0; i < 4; i++)
-			{
-				if(i==3)
-				{
-					s += '<td nowrap class="text-right"><input class="btn btn-sm btn-primary" type="button" value="+" onclick="addDelRow(this, \'summary\', \'add\')"/> <input class="btn btn-sm btn-danger" type="button" value=" -" onclick="addDelRow(this, \'summary\', \'del\')"/></td>';
-				}
-				else if(i == 1)
-				{
-					s += '<td><input class="form-control" type="text" onblur="feecount(\'summary\')"/></td>';
-				}
-				else
-				{
-					s += '<td><input class="form-control" type="text"/></td>';
-				}
-			}
-			s += '</tr>';
-		}
-		if(id == 'stock')
-		{
-			s += '<tr class="item_content">';
-			for (i = 0; i < 8; i++)
-			{
-				if($.inArray(i, [0,2,6]) > -1)
-				{
-					s += '<td><input class="form-control" type="text"/></td>';
-				}
-				else if($.inArray(i, [3,4,5]) > -1)
-				{
-					s += '<td><input class="form-control" type="text" /></td>';
-				}
-				else if (i == 7)
-				{
-					s += '<td nowrap class="text-right"><input class="btn btn-sm btn-primary" type="button" value="+" onclick="addDelRow(this, \'stock\', \'add\')"/> <input class="btn btn-sm btn-danger" type="button" value=" -" onclick="addDelRow(this, \'stock\', \'del\')"/></td>';
-				}
-				else
-				{
-					s += '<td><input type="text" size="10"/></td>'
-				}
-			}
-			s += '</tr>';
-		}
-		if(id == 'storage')
-		{
-			s += '<tr class="item_content">';
-			for (i = 1; i <= 16; i++)
-			{
-				if (i == 16)
-				{
-					s += '<td nowrap class="text-right"><input class="btn btn-sm btn-primary" type="button" value="+" onclick="addDelRow(this, \'storage\', \'add\')"/> <input class="btn btn-sm btn-danger" type="button" value=" -" onclick="addDelRow(this, \'storage\', \'del\')"/></td>';
-				}
-				else if ($.inArray(i, [1]) > -1)
-				{
-					s += '<td><input class="form-control" type="text" size="10"/></td>'
-				}
-				else if ($.inArray(i, [2]) > -1)
-				{
-					s += '<td><input type="text" size="10"/>' +
-					'<select onchange="storagefee(this)">' +
-					'<option value="0">數量</option>' +
-					'<option value="1">才積</option>' +
-					'</select>' +
-					'</td>'
-				}
-				else if (i == 3)
-				{
-					s += '<td><input type="text" type="text" class="datepicker input-sm" size="3"></td>';
-				}
-				else if (i == 10)
-				{
-					s += '<td><div class="input-daterange input-group" id="datepicker">' +
-					'<input type="text" class="input-sm" id="start" size="5"/>' +
-					'<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>' +
-					'<input type="text" class="input-sm" id="end" size="5"/>' +
-					'</div></td>';
-				}
-				else if ($.inArray(i, [4, 5, 6, 7, 8]) > -1)
-				{
-					s += '<td><input type="text" size="5"/></td>'
-				}
-				else if ($.inArray(i, [9, 12, 15]) > -1)
-				{
-					s += '<td><input type="text" size="5" onblur="storagefee(this)"/></td>'
-				}
-				else
-				{
-					s += '<td></td>';
-				}
-
-			}
-			s += '</tr>';
-		}
-		return s;
+		list.append(str);
 	}
 </script>
 </body>
