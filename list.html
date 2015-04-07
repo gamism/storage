@@ -143,7 +143,7 @@
 	$('.input-daterange').datepicker(opt2.opt).on('hide', function(e){
 		daydiff(e)
 	});
-	getById('companyTitle').innerHTML = (queryparser().title)?queryparser().title:'Hello, world!';
+	getById('companyTitle').innerHTML = (queryparser().title)?decodeURI(queryparser().title):'Hello, world!';
 
 	function daydiff(e)
 	{
@@ -167,8 +167,8 @@
 		qty = $(row.cells[8]).children().val();
 		day = row.cells[10].innerHTML;
 		price = $(row.cells[11]).children().val();
-		console.info('data %s %s %s %s',day,price,qty, count_method);
-		row.cells[12].innerHTML = Math.round((((count_method=='0')?amount:qty)/1000) * day * price);
+//		console.info('data %s %s %s %s',day,price,qty, count_method);
+		row.cells[12].innerHTML = Math.round((((count_method=='0')?amount:qty/1000)) * day * price);
 		quickcount();
 	}
 	function quickcount()
