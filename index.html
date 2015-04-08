@@ -131,7 +131,7 @@
 		'<td>'+com+'</td>' +
 		'<td>'+tel+'</td>' +
 		'<td>'+addr+'</td>' +
-		'<td><input type="button" class="btn btn-primary" value="聯絡人列表" onclick="location.href=\'index_subclient.html?'+ $.param({title:com, cid:id})+'\'"/></td>' +
+		'<td><input type="button" class="btn btn-primary" value="聯絡人列表" onclick="location.href=\'index_subclient.html?'+ $.param({cid:id})+'\'"/></td>' +
 		'<td><input type="button" class="btn btn-primary" value="月結報表" onclick="location.href=\'list.html?'+ $.param({title:com})+'\'"/></td>' +
 		'<td><input type="button" class="btn btn-danger" value="編輯" onclick="company.editCustomer(this,'+id+')"/> <input type="button" class="btn btn-danger" value="刪除" onclick="if(confirm(\'Delete this company?\')){addDelRow(this, \'customerListTable\', \'del\');company.delCustomer('+id+')}"/></td>' +
 		'</tr>';

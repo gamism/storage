@@ -16,6 +16,10 @@ function getById(id)
 {
 	return document.getElementById(id)
 }
+function getByName(name)
+{
+	return document.getElementsByName(name)
+}
 
 function queryparser()
 {
@@ -45,6 +49,16 @@ function genRow(id)
 {
 	id = id || 'storage';
 	var i,s = '';
+	if(id == 'deliverTable')
+	{
+		s += '<tr>';
+		s += '<td><input name="name" type="text" class="form-control"/></td>';
+		s += '<td><input name="spec" type="text" class="form-control"/></td>';
+		s += '<td><input name="qty" type="text" class="form-control"/></td>';
+		s += '<td><input name="weight" type="text" class="form-control"/></td>';
+		s += '<td nowrap class="text-right"><input class="btn btn-sm btn-primary" type="button" value="+" onclick="addDelRow(this, \''+id+'\', \'add\')"/> <input class="btn btn-sm btn-danger" type="button" value=" -" onclick="addDelRow(this, \''+id+'\', \'del\')"/></td>';
+		s += '</tr>';
+	}
 	if(id == 'summary')
 	{
 		s += '<tr>';

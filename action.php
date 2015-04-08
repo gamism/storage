@@ -48,8 +48,39 @@ if($action)
 			break;
 		case 'subclient':
 			subclient();
+			break;
+		case 'getTitle':
+			getTitle();
+			break;
 		default:
 			break;
+	}
+}
+
+function getTitle()
+{
+	$cid = $_GET['cid'];
+	$sid = $_GET['sid'];
+
+	if($sid != "")
+	{
+		$sql = "SELECT company FROM `subclient` where sid = $sid";
+		$ret = query($sql);
+		$list = [];
+		while ($v = mysql_fetch_array($ret)) {
+			array_push($list, $v);
+		}
+		print(json_encode($list));
+	}
+	else
+	{
+		$sql = "SELECT company FROM `company` where cid = $cid";
+		$ret = query($sql);
+		$list = [];
+		while ($v = mysql_fetch_array($ret)) {
+			array_push($list, $v);
+		}
+		print(json_encode($list));
 	}
 }
 

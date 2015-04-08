@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<head lang="zh-tw">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	<title>東勢倉儲有限公司</title>
+
+	<!-- Bootstrap -->
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/bootstrap-datepicker3.min.css" rel="stylesheet">
+
+	<script src="commonjs.php"></script>
+
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<script src="js/jquery.1.11.2.min.js"></script>
+	<!-- Include all compiled plugins (below), or include individual files as needed -->
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/bootstrap-datepicker.min.js"></script>
+	<script src="locales/bootstrap-datepicker.zh-TW.min.js"></script>
+	<script src="js/common.js"></script>
+</head>
+<body>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12 text-right">
+			<h1>
+				<button type="button" class="btn btn-warning btn-lg" onclick="backSubclient()">回聯絡人列表</button>
+			<button type="button" class="btn btn-warning btn-lg" onclick="(confirm('Do you want to logout system?'))?location.href='auth.php?action=logout':false">登出</button>
+			</h1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-2 lead">客戶名稱: </div>
+		<div class="col-md-4 lead" id="clientTitle">hello world</div>
+		<div class="col-md-3 text-right lead">出貨日期: </div>
+		<div class="col-md-3"><input type="text" class="form-control datepicker" placeholder="選擇出貨日期"/><input type="hidden" name="deliveryDate" value="" id="deliveryDate"/></div>
+	</div>
+	<br/>
+	<table class="table table-bordered" id="deliverTable">
+		<tr>
+			<th>品名</th>
+			<th>規格</th>
+			<th>數量</th>
+			<th>重量</th>
+			<th class="col-md-1 text-right"><input class="btn btn-primary" type="button" value="+" onclick="addDelRow(this, 'deliverTable', 'add')"/></th>
+		</tr>
+		<tr>
+			<td colspan="5" class="text-right">
+				<input type="button" class="btn btn-success" value="儲存" onclick="save()"/>&nbsp;
+				<input type="button" class="btn btn-success" value="列印"/>
+			</td>
+		</tr>
+	</table>
+</div>
+<script>
+	function backSubclient()
+	{
+		location.href='index_subclient.html?'+ $.param({cid:queryparser().cid});
+	}
+	function save()
+	{
+//		console.info('name ',getByName('name'));
+		$.each(getByName('name'),function(k,v){
+//			console.info('k ',k, ' v ', v.value);
+		});
+	}
+	$(document).ready(function(){
+		$.get('action.php?'+ $.param({action:'getTitle',sid:queryparser().sid}), function(xhr){
+//			console.info('xhr', xhr);
+			getById('clientTitle').innerHTML = xhr[0].company;
+		},'json');
+		getById('deliveryDate').value = new Date().getFullYear() + '/' + (new Date().getMonth()+1)  + '/' + new Date().getDate();
+		$('.datepicker')[0].value = new Date().getFullYear() + ' 年 ' + (new Date().getMonth()+1)  + ' 月 ' + new Date().getDate() + ' 日';
+		$('.datepicker').datepicker({format:'yyyy 年 m 月 d 日'}).on('hide', function(e){
+//			console.info('e ',e);
+			if(e.dates.length)
+			{
+				getById('deliveryDate').value = new Date(e.date).getFullYear() + '/' + (new Date(e.date).getMonth()+1) + '/' + new Date(e.date).getDate();
+			}
+		});
+	});
+</script>
+</body>
+</html>
