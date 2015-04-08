@@ -18,6 +18,12 @@ if (!$con) {
 }
 mysql_select_db($dbname, $con);
 
+function query($sql)
+{
+	$result = mysql_query($sql) or die("DB cannot handle this query.");
+	return $result;
+}
+
 $action = $_REQUEST['action'];
 
 if($action)
@@ -32,20 +38,24 @@ if($action)
 				case 'get':
 					getCompanyList();
 					break;
+				case 'edit':
+					editCompany();
+					break;
 				case 'del':
 					delCompany();
 					break;
 			}
 			break;
+		case 'subclient':
+			subclient();
 		default:
 			break;
 	}
 }
 
-function query($sql)
+function subclient()
 {
-	$result = mysql_query($sql) or die("DB cannot handle this query.");
-	return $result;
+
 }
 
 function delCompany()
@@ -73,5 +83,16 @@ function addCompany()
 	$tel = $_REQUEST['tel'];
 	$address = $_REQUEST['address'];
 	$sql = "INSERT INTO `storage`.`company` (`cid`, `company`, `tel`, `address`, `createDate`) VALUES (NULL, '$company', '$tel', '$address', CURRENT_TIMESTAMP)";
+	query($sql);
+}
+
+function editCompany()
+{
+	$cid = $_GET['cid'];
+	$company = $_GET['company'];
+	$tel = $_GET['tel'];
+	$address = $_GET['address'];
+	echo "$cid $company $tel $address";
+	$sql = "UPDATE `storage`.`company` SET `company` = '$company', `tel` = '$tel', `address` = '$address' WHERE `company`.`cid` = $cid;";
 	query($sql);
 }

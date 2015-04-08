@@ -30,7 +30,7 @@
 <body>
 <div class="container-fluid">
 	<div class="row">
-		<div class="col-md-6"><h1>客戶列表</h1></div>
+		<div class="col-md-6"><h1 id="target_company">NULL</h1></div>
 		<div class="col-md-6 text-right">
 			<h1>
 			<button type="button" class="btn btn-warning btn-lg" onclick="(confirm('Do you want to logout system?'))?location.href='auth.php?action=logout':false">登出</button>
@@ -75,9 +75,11 @@
 	</div>
 </div>
 <script>
+	getById('target_company').innerHTML = (queryparser().title)?decodeURI(queryparser().title):'Hello, world!';
+
 	var company={};
 	company.init = function(){
-		$.get('action.php?'+ $.param({action:'company',method:'get'}), function(info){
+		$.get('action.php?'+ $.param({action:'subcompany',method:'get'}), function(info){
 			if(info)
 			{
 				getById('customerList').innerHTML="";
@@ -130,7 +132,7 @@
 		'<td>'+com+'</td>' +
 		'<td>'+tel+'</td>' +
 		'<td>'+addr+'</td>' +
-		'<td><input type="button" class="btn btn-primary" value="產生出貨單" onclick="location.href=\'index_subclient.html?'+ $.param({title:com, cid:id})+'\'"/></td>' +
+		'<td><input type="button" class="btn btn-primary" value="產生出貨單" onclick="location.href=\'list.html?'+ $.param({title:com})+'\'"/></td>' +
 		'<td><input type="button" class="btn btn-danger" value="編輯" onclick="company.editCustomer(this,'+id+')"/> <input type="button" class="btn btn-danger" value="刪除" onclick="if(confirm(\'Delete this company?\')){addDelRow(this, \'customerListTable\', \'del\');company.delCustomer('+id+')}"/></td>' +
 		'</tr>';
 
