@@ -55,13 +55,52 @@ if($action)
 
 function subclient()
 {
+	switch($_GET['method'])
+	{
+		case 'get':
+			$cid = $_GET['cid'];
+			$sql = "SELECT * FROM `subclient` where cid = $cid";
+			$ret = query($sql);
+			$list = [];
+			while ($v = mysql_fetch_array($ret)) {
+				array_push($list, $v);
+			}
+			print(json_encode($list));
+			break;
+		case 'add':
+			$company = $_REQUEST['company'];
+			$tel = $_REQUEST['tel'];
+			$address = $_REQUEST['address'];
+			$cid = $_GET['cid'];
+			$reciver = $_GET['reciver'];
 
+			$sql = "INSERT INTO `storage`.`subclient` (`cid`, `sid`, `company`, `address`, `tel`, `reciver`, `createTime`) VALUES ('$cid', NULL, '$company', '$address', '$tel', '$reciver', CURRENT_TIMESTAMP)";
+			query($sql);
+			break;
+		case 'del':
+			$sid = $_GET['sid'];
+			$sql = "DELETE FROM `storage`.`subclient` WHERE `subclient`.`sid` = $sid";
+			query($sql);
+			break;
+		case 'edit':
+			$company = $_GET['company'];
+			$address = $_REQUEST['address'];
+			$tel = $_REQUEST['tel'];
+			$reciver = $_GET['reciver'];
+			$sid = $_GET['sid'];
+
+			$sql = "UPDATE `storage`.`subclient` SET `company` = '$company', `address` = '$address', `tel` = '$tel', `reciver` = '$reciver' WHERE `subclient`.`sid` = $sid";
+			query($sql);
+			break;
+	}
 }
 
 function delCompany()
 {
 	$cid = $_GET['cid'];
 	$sql = "DELETE FROM `storage`.`company` WHERE `company`.`cid` = $cid";
+	query($sql);
+	$sql = "DELETE FROM `storage`.`subclient` WHERE `subclient`.`cid` = $cid";
 	query($sql);
 }
 

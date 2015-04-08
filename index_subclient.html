@@ -33,14 +33,18 @@
 		<div class="col-md-6"><h1 id="target_company">NULL</h1></div>
 		<div class="col-md-6 text-right">
 			<h1>
-			<button type="button" class="btn btn-warning btn-lg" onclick="(confirm('Do you want to logout system?'))?location.href='auth.php?action=logout':false">登出</button>
+				<button type="button" class="btn btn-warning btn-lg" onclick="location.href='index.html'">回客戶列表</button>
+				<button type="button" class="btn btn-warning btn-lg"
+						onclick="(confirm('Do you want to logout system?'))?location.href='auth.php?action=logout':false">
+					登出
+				</button>
 			</h1>
 		</div>
 	</div>
 	<div>
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<input id="addCustomerBtn" type="button" class="form-control btn-danger" value="開啟新增客戶視窗" onclick="$('#addCustomer').toggle('fast', function(){getById('addCustomerBtn').value = ((this.style.display == 'none')?'開啟':'關閉') + '新增客戶視窗'})"/>
+				<input id="addCustomerBtn" type="button" class="form-control btn-danger" value="開啟新增聯絡人視窗" onclick="$('#addCustomer').toggle('fast', function(){getById('addCustomerBtn').value = ((this.style.display == 'none')?'開啟':'關閉') + '新增聯絡人視窗'})"/>
 			</div>
 			<div class="panel-body" id="addCustomer" style="display: none;">
 				<table class="table table-bordered">
@@ -53,11 +57,15 @@
 						<td><input type="text" class="form-control" id="newTel"/></td>
 					</tr>
 					<tr>
+						<th class="col-md-2 text-right bg-info">聯絡人</th>
+						<td><input type="text" class="form-control" id="newReciver"/></td>
+					</tr>
+					<tr>
 						<th class="col-md-2 text-right bg-info">地址</th>
 						<td><input type="text" class="form-control" id="newAddr"/></td>
 					</tr>
 					<tr>
-						<td colspan="2" class="text-right"><button class="btn btn-success" onclick="company.addCustomer()">新增客戶</button></td>
+						<td colspan="2" class="text-right"><button class="btn btn-success" onclick="subclient.addCustomer()">新增聯絡人</button></td>
 					</tr>
 				</table>
 			</div>
@@ -66,8 +74,9 @@
 			<tr>
 				<th class="col-md-2">公司名稱</th>
 				<th class="col-md-2">電話</th>
+				<th class="col-md-2">聯絡人</th>
 				<th class="col-md-4">地址</th>
-				<th class="col-md-2">產生出貨單</th>
+				<th nowrap>產生出貨單</th>
 				<th class="col-md-2"></th>
 			</tr>
 			<tbody id="customerList"></tbody>
@@ -77,42 +86,45 @@
 <script>
 	getById('target_company').innerHTML = (queryparser().title)?decodeURI(queryparser().title):'Hello, world!';
 
-	var company={};
-	company.init = function(){
-		$.get('action.php?'+ $.param({action:'subcompany',method:'get'}), function(info){
+	var subclient={};
+	subclient.init = function(){
+		$.get('action.php?'+ $.param({action:'subclient',method:'get',cid:queryparser().cid}), function(info){
 			if(info)
 			{
 				getById('customerList').innerHTML="";
 				$.each(info, function(k, v){
-					company.showCustomer(v.company, v.tel, v.address, v.cid);
+					subclient.showCustomer(v.company, v.tel, v.address, v.reciver, v.sid);
 				});
 			}
 		}, 'json');
 	};
 
-	company.addCustomer = function()
+	subclient.addCustomer = function()
 	{
-		var com, tel, addr;
+		var com, tel, addr, reciver;
 		com = getById('newCompany');
 		tel = getById('newTel');
+		reciver = getById('newReciver');
 		addr = getById('newAddr');
 
-		if(com.value.length && addr.value.length)
+		if(com.value.length && addr.value.length && queryparser().cid)
 		{
-
 			$.get('action.php?' + $.param({
-				action: 'company',
+				action: 'subclient',
 				method: 'add',
 				company: com.value,
 				tel: tel.value,
-				address: addr.value
+				address: addr.value,
+				reciver: reciver.value,
+				cid: queryparser().cid
 			}), function (xhr)
 			{
 				//reset
 				com.value = "";
 				tel.value = "";
 				addr.value = "";
-				company.init();
+				reciver.value = "";
+				subclient.init();
 				$('#addCustomer').toggle('fast');
 			});
 		}
@@ -123,61 +135,57 @@
 		}
 //		company.showCustomer(com.value, tel.value, addr.value);
 	};
-	company.showCustomer = function(com, tel, addr, id)
+	subclient.showCustomer = function(com, tel, addr, reciver, id)
 	{
 		var str='',list;
 		list = $('#customerList');
 
-		str += '<tr>' +
+		str += '<tr class="lead">' +
 		'<td>'+com+'</td>' +
 		'<td>'+tel+'</td>' +
+		'<td>'+reciver+'</td>' +
 		'<td>'+addr+'</td>' +
 		'<td><input type="button" class="btn btn-primary" value="產生出貨單" onclick="location.href=\'list.html?'+ $.param({title:com})+'\'"/></td>' +
-		'<td><input type="button" class="btn btn-danger" value="編輯" onclick="company.editCustomer(this,'+id+')"/> <input type="button" class="btn btn-danger" value="刪除" onclick="if(confirm(\'Delete this company?\')){addDelRow(this, \'customerListTable\', \'del\');company.delCustomer('+id+')}"/></td>' +
+		'<td><input type="button" class="btn btn-danger" value="編輯" onclick="subclient.editCustomer(this,'+id+')"/> <input type="button" class="btn btn-danger" value="刪除" onclick="if(confirm(\'Delete this company?\')){addDelRow(this, \'customerListTable\', \'del\');subclient.delCustomer('+id+')}"/></td>' +
 		'</tr>';
 
 		list.append(str);
 	};
-	company.editCustomer = function(row, id)
+	subclient.editCustomer = function(row, id)
 	{
-		console.info('this ',row.parentNode.parentNode.rowIndex, ' id ', id);
+//		console.info('this ',row.parentNode.parentNode.rowIndex, ' id ', id);
 		var rowIdx = row.parentNode.parentNode.rowIndex, tmp, val, valueSet=[];
 		if(row.value == '編輯')
 		{
 			$(row).attr('class', 'btn btn-success');
 			$(row).attr('value', '儲存');
-			tmp = getById('customerListTable').rows[rowIdx].cells[0].innerHTML;
-			getById('customerListTable').rows[rowIdx].cells[0].innerHTML = '<input class="form-control" type="text" value="'+tmp+'">';
-			tmp = getById('customerListTable').rows[rowIdx].cells[1].innerHTML;
-			getById('customerListTable').rows[rowIdx].cells[1].innerHTML = '<input class="form-control" type="text" value="'+tmp+'">';
-			tmp = getById('customerListTable').rows[rowIdx].cells[2].innerHTML;
-			getById('customerListTable').rows[rowIdx].cells[2].innerHTML = '<input class="form-control" type="text" value="'+tmp+'">';
+			for(var i =0;i<4;i++)
+			{
+				tmp = getById('customerListTable').rows[rowIdx].cells[i].innerHTML;
+				getById('customerListTable').rows[rowIdx].cells[i].innerHTML = '<input class="form-control" type="text" value="'+tmp+'">';
+			}
 		}
 		else
 		{
 			$(row).attr('class', 'btn btn-danger');
 			$(row).attr('value', '編輯');
 
-			console.info('child ',getById('customerListTable').rows[rowIdx].cells[0].childNodes[0].value);
-			val = getById('customerListTable').rows[rowIdx].cells[0].childNodes[0].value;
-			valueSet.push(val);
-			getById('customerListTable').rows[rowIdx].cells[0].innerHTML = val;
-			val = getById('customerListTable').rows[rowIdx].cells[1].childNodes[0].value;
-			valueSet.push(val);
-			getById('customerListTable').rows[rowIdx].cells[1].innerHTML = val;
-			val = getById('customerListTable').rows[rowIdx].cells[2].childNodes[0].value;
-			valueSet.push(val);
-			getById('customerListTable').rows[rowIdx].cells[2].innerHTML = val;
-			console.info('valueSet ',valueSet);
-			$.get('action.php?' + $.param({action:'company', method:'edit', cid:id, company:valueSet[0],tel:valueSet[1],address:valueSet[2]}));
+//			console.info('child ',getById('customerListTable').rows[rowIdx].cells[0].childNodes[0].value);
+			for(var i =0;i<4;i++)
+			{
+				val = getById('customerListTable').rows[rowIdx].cells[i].childNodes[0].value;
+				valueSet.push(val);
+				getById('customerListTable').rows[rowIdx].cells[i].innerHTML = val;
+			}
+			$.get('action.php?' + $.param({action:'subclient', method:'edit', sid:id, company:valueSet[0],tel:valueSet[1],reciver:valueSet[2],address:valueSet[3]}));
 		}
 	};
-	company.delCustomer = function(id)
+	subclient.delCustomer = function(id)
 	{
-		$.get('action.php?' + $.param({action:'company',method:'del',cid:id}));
+		$.get('action.php?' + $.param({action:'subclient',method:'del',sid:id}));
 	};
 
-	company.init();
+	subclient.init();
 </script>
 </body>
 </html>
