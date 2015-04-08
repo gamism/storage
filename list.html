@@ -53,7 +53,7 @@
 		<th rowspan="2">倉租</th>
 		<th rowspan="2">小計</th>
 		<th rowspan="2">裝卸費</th>
-		<th rowspan="2" class="text-right"><input class="btn btn-lg btn-primary" type="button" value="+" onclick="addDelRow(this, 'storage', 'top_add')"/></th>
+		<th rowspan="2" class="text-right"><input class="btn btn-primary" type="button" value="+" onclick="addDelRow(this, 'storage', 'top_add')"/></th>
 	</tr>
 	<tr class="bg-success">
 		<td>數量</td>
@@ -98,7 +98,7 @@
 			<th>棧板 (個 )</th>
 			<th>撕(貼)標</th>
 			<th>備註</th>
-			<th class="text-right"><input class="btn btn-lg btn-primary" type="button" value="+" onclick="addDelRow(this, 'stock', 'top_add')"/></th>
+			<th class="text-right"><input class="btn btn-primary" type="button" value="+" onclick="addDelRow(this, 'stock', 'top_add')"/></th>
 		</tr>
 		<tr>
 			<td colspan="3" class="text-right"></td>
@@ -114,7 +114,7 @@
 			<th class="col-md-4">項目</th>
 			<th class="col-md-1">金額</th>
 			<th class="col-md-5">備註</th>
-			<th class="text-right col-md-1"><input class="btn btn-lg btn-primary" type="button" value="+" onclick="addDelRow(this, 'summary', 'top_add')"/></th>
+			<th class="text-right col-md-1"><input class="btn btn-primary" type="button" value="+" onclick="addDelRow(this, 'summary', 'top_add')"/></th>
 		</tr>
 		<tr>
 			<td></td>
@@ -137,13 +137,16 @@
 		}
 	}
 
+	$.get('action.php?'+ $.param({action:'getTitle',cid:queryparser().cid}), function(xhr){
+//			console.info('xhr', xhr);
+		getById('companyTitle').innerHTML = xhr[0].company;
+	},'json');
 	opt1 = new myobj();
 	opt2 = new myobj('mm/dd/yyyy');
 	$('.datepicker').datepicker(opt1.opt);
 	$('.input-daterange').datepicker(opt2.opt).on('hide', function(e){
 		daydiff(e)
 	});
-	getById('companyTitle').innerHTML = (queryparser().title)?decodeURI(queryparser().title):'Hello, world!';
 
 	function daydiff(e)
 	{

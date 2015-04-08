@@ -46,6 +46,9 @@ if($action)
 					break;
 			}
 			break;
+		case 'delivery':
+			delivery();
+			break;
 		case 'subclient':
 			subclient();
 			break;
@@ -53,6 +56,25 @@ if($action)
 			getTitle();
 			break;
 		default:
+			break;
+	}
+}
+
+function delivery()
+{
+	$cid = $_GET['cid'];
+	$sid = $_GET['sid'];
+	$deliveryDate = $_GET['deliveryDate'];
+	$item = $_GET['item'];
+	$spec = $_GET['spec'];
+	$qty = $_GET['qty'];
+	$weight = $_GET['weight'];
+	$method = $_GET['method'];
+	switch($method)
+	{
+		case 'add':
+			$sql = "INSERT INTO `storage`.`delivery` (`cid`, `sid`, `did`, `deliveryDate`, `item`, `spec`, `qty`, `weight`, `createDate`) VALUES ('$cid', '$sid', NULL, '$deliveryDate', '$item', '$spec', '$qty', '$weight', CURRENT_TIMESTAMP)";
+			query($sql);
 			break;
 	}
 }
@@ -120,7 +142,7 @@ function subclient()
 			$reciver = $_GET['reciver'];
 			$sid = $_GET['sid'];
 
-			$sql = "UPDATE `storage`.`subclient` SET `company` = '$company', `address` = '$address', `tel` = '$tel', `reciver` = '$reciver' WHERE `subclient`.`sid` = $sid";
+			$sql = "UPDATE `storage`.`subclient` SET `company` = '$company', `address` = '$address', `tel` = '$tel', `reciver` = '$reciver', `createTime` = CURRENT_TIMESTAMP WHERE `subclient`.`sid` = $sid";
 			query($sql);
 			break;
 	}
@@ -163,6 +185,6 @@ function editCompany()
 	$tel = $_GET['tel'];
 	$address = $_GET['address'];
 	echo "$cid $company $tel $address";
-	$sql = "UPDATE `storage`.`company` SET `company` = '$company', `tel` = '$tel', `address` = '$address' WHERE `company`.`cid` = $cid;";
+	$sql = "UPDATE `storage`.`company` SET `company` = '$company', `tel` = '$tel', `address` = '$address', `createDate` = CURRENT_TIMESTAMP WHERE `company`.`cid` = $cid;";
 	query($sql);
 }

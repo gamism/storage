@@ -32,38 +32,31 @@
 	<div class="row">
 		<div class="col-md-12 text-right">
 			<h1>
-				<button type="button" class="btn btn-warning btn-lg" onclick="backSubclient()">回聯絡人列表</button>
+				<button type="button" class="btn btn-warning btn-lg" onclick="location.href='index.html'">回客戶列表</button>
 			<button type="button" class="btn btn-warning btn-lg" onclick="(confirm('Do you want to logout system?'))?location.href='auth.php?action=logout':false">登出</button>
 			</h1>
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-md-6 lead">客戶名稱: <span id="clientTitle">null</span></div>
+		<div class="col-md-6 lead"></div>
 		<div class="col-md-3 text-right lead">出貨日期: </div>
 		<div class="col-md-3"><input type="text" class="form-control datepicker" style="padding-left: 10px;" placeholder="選擇出貨日期" readonly/><input type="hidden" name="deliveryDate" value="" id="deliveryDate"/></div>
 	</div>
 	<br/>
-	<table class="table table-bordered" id="deliverTable">
+	<table class="table table-bordered" id="deliveryListTable">
 		<tr>
-			<th>品名</th>
-			<th>規格</th>
-			<th>數量</th>
-			<th>重量</th>
-			<th class="col-md-1 text-right"><input class="btn btn-primary" type="button" value="+" onclick="addDelRow(this, 'deliverTable', 'top_add')"/></th>
+			<th>客戶</th>
+			<th>聯絡人</th>
+			<th>送貨日期</th>
+			<th>送貨單</th>
 		</tr>
-		<tr>
-			<td colspan="5" class="text-right">
-				<input type="button" class="btn btn-success" value="儲存" onclick="if(confirm('儲存出貨單,並返回聯絡人列表')) save();"/>&nbsp;
-				<input type="button" class="btn btn-success" value="列印" onclick="location.href='deliverylist.html'"/>
-			</td>
-		</tr>
+		<tbody id="deliveryListTbody"></tbody>
 	</table>
 </div>
 <script>
-	function backSubclient()
-	{
-		location.href='index_subclient.html?'+ $.param({cid:queryparser().cid});
-	}
+	/*
+	 select *, month(delivery.deliveryDate), year(delivery.deliveryDate), substring_index('2015/4', '/', 1), substring_index('2015/4', '/' , -1) from `delivery` where month(delivery.deliveryDate)
+	* */
 	function save()
 	{
 		var _each = true;
@@ -107,17 +100,13 @@
 		location.href='index_subclient.html?'+ $.param({cid:queryparser().cid});
 	}
 	$(document).ready(function(){
-		$.get('action.php?'+ $.param({action:'getTitle',sid:queryparser().sid}), function(xhr){
-//			console.info('xhr', xhr);
-			getById('clientTitle').innerHTML = xhr[0].company;
-		},'json');
-		getById('deliveryDate').value = new Date().getFullYear() + '/' + (new Date().getMonth()+1)  + '/' + new Date().getDate();
-		$('.datepicker')[0].value = new Date().getFullYear() + ' 年 ' + (new Date().getMonth()+1)  + ' 月 ' + new Date().getDate() + ' 日';
-		$('.datepicker').datepicker({format:'yyyy 年 m 月 d 日'}).on('hide', function(e){
+		getById('deliveryDate').value = new Date().getFullYear() + '/' + (new Date().getMonth()+1);
+		$('.datepicker')[0].value = new Date().getFullYear() + ' 年 ' + (new Date().getMonth()+1)  + ' 月 ';
+		$('.datepicker').datepicker({format:'yyyy 年 m 月',minViewMode:1,language:'zh-TW'}).on('hide', function(e){
 //			console.info('e ',e);
 			if(e.dates.length)
 			{
-				getById('deliveryDate').value = new Date(e.date).getFullYear() + '/' + (new Date(e.date).getMonth()+1) + '/' + new Date(e.date).getDate();
+				getById('deliveryDate').value = new Date(e.date).getFullYear() + '/' + (new Date(e.date).getMonth()+1);
 			}
 		});
 	});
