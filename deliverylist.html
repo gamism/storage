@@ -43,12 +43,14 @@
 		<div class="col-md-3"><input type="text" class="form-control datepicker" style="padding-left: 10px;" placeholder="選擇出貨日期" readonly/><input type="hidden" name="deliveryDate" value="" id="deliveryDate"/></div>
 	</div>
 	<br/>
-	<table class="table table-bordered" id="deliveryListTable">
+	<table class="table table-bordered table-hover" id="deliveryListTable">
 		<tr>
 			<th>客戶</th>
 			<th>聯絡人</th>
 			<th>送貨日期</th>
+			<th>送貨單號</th>
 			<th>送貨單</th>
+			<th></th>
 		</tr>
 		<tbody id="deliveryListTbody"></tbody>
 	</table>
@@ -57,6 +59,59 @@
 	/*
 	 select *, month(delivery.deliveryDate), year(delivery.deliveryDate), substring_index('2015/4', '/', 1), substring_index('2015/4', '/' , -1) from `delivery` where month(delivery.deliveryDate)
 	* */
+	function editDeliveryDate(row, id)
+	{
+		var rowIdx = row.parentNode.parentNode.rowIndex, tmp, val, valueSet=[];
+		if(row.value == '修改出貨日期')
+		{
+			$(row).attr('class', 'btn btn-success');
+			$(row).attr('value', '儲存出貨日期');
+
+			tmp = getById('deliveryListTable').rows[rowIdx].cells[2].innerHTML;
+			getById('deliveryListTable').rows[rowIdx].cells[2].innerHTML = '<input class="form-control datepicker1" type="text" value="'+tmp+'" readonly>';
+			$('.datepicker1').datepicker({format:'yyyy/m/d'});
+		}
+		else
+		{
+			$(row).attr('class', 'btn btn-danger');
+			$(row).attr('value', '修改出貨日期');
+
+			val = getById('deliveryListTable').rows[rowIdx].cells[2].childNodes[0].value;
+			valueSet.push(val);
+			getById('deliveryListTable').rows[rowIdx].cells[2].innerHTML = val;
+
+			$.get('action.php?' + $.param({action:'delivery', method:'edit', uniqid:id, deliveryDate:valueSet[0]}), function(xhr){getlist(getById('deliveryDate').value);});
+		}
+	}
+ 	function delDelivery(id)
+	{
+		if(confirm('刪除此筆出貨單?') && id.length)
+		{
+			$.get('action.php?' + $.param({action: 'delivery', method: 'del', uniqid: id}));
+		}
+		getlist(getById('deliveryDate').value);
+	}
+ 	function getlist(date)
+	{
+		$.get('action.php?'+ $.param({action:'delivery',method:'getlist',date:date}), function(xhr){
+//			console.info('xhr ',xhr);
+			getById('deliveryListTbody').innerHTML = "";
+			var st = "";
+			$.each(xhr, function(k,v){
+//				console.info('v ',v);
+				st += '<tr class="lead">' +
+				"<td class='col-md-3'>"+ v.c_company+"</td>" +
+				"<td class='col-md-3'>"+ v.s_company +"</td>" +
+				"<td class='col-md-2'>"+ v.deliveryDate +"</td>" +
+				"<td class='col-md-1'>"+ v.uniqid.substr(0,12).toUpperCase() +"</td>" +
+				'<td class="col-md-1"><input type="button" class="btn btn-primary" value="列印出貨單"/></td>' +
+				'<td class="col-md-2"><input type="button" class="btn btn-danger" value="修改出貨日期" onclick="editDeliveryDate(this,\''+ v.uniqid+'\')"/>&nbsp;<input type="button" class="btn btn-danger" onclick="delDelivery(\''+ v.uniqid+'\')" value="刪除"/></td>' +
+				"</tr>";
+				$('#deliveryListTbody').append(st);
+				st = "";
+			});
+		}, 'json');
+	}
 	function save()
 	{
 		var _each = true;
@@ -107,8 +162,10 @@
 			if(e.dates.length)
 			{
 				getById('deliveryDate').value = new Date(e.date).getFullYear() + '/' + (new Date(e.date).getMonth()+1);
+				getlist(getById('deliveryDate').value);
 			}
 		});
+		getlist(new Date().getFullYear() + '/' + (new Date().getMonth()+1));
 	});
 </script>
 </body>

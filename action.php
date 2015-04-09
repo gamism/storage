@@ -55,9 +55,17 @@ if($action)
 		case 'getTitle':
 			getTitle();
 			break;
+		case 'getUniquid':
+			getUniqid();
+			break;
 		default:
 			break;
 	}
+}
+
+function getUniqid()
+{
+	echo md5(uniqid());
 }
 
 function delivery()
@@ -65,15 +73,35 @@ function delivery()
 	$cid = $_GET['cid'];
 	$sid = $_GET['sid'];
 	$deliveryDate = $_GET['deliveryDate'];
+	$uniqid = $_GET['uniqid'];
 	$item = $_GET['item'];
 	$spec = $_GET['spec'];
+	$unit = $_GET['unit'];
 	$qty = $_GET['qty'];
 	$weight = $_GET['weight'];
 	$method = $_GET['method'];
+	$date = $_GET['date'];
 	switch($method)
 	{
 		case 'add':
-			$sql = "INSERT INTO `storage`.`delivery` (`cid`, `sid`, `did`, `deliveryDate`, `item`, `spec`, `qty`, `weight`, `createDate`) VALUES ('$cid', '$sid', NULL, '$deliveryDate', '$item', '$spec', '$qty', '$weight', CURRENT_TIMESTAMP)";
+			$sql = "INSERT INTO `storage`.`delivery` (`cid`, `sid`, `did`, `uniqid`, `deliveryDate`, `item`, `spec`, `unit`, `qty`, `weight`, `createDate`) VALUES ('$cid', '$sid', NULL, '$uniqid' ,'$deliveryDate', '$item', '$spec', '$unit', '$qty', '$weight', CURRENT_TIMESTAMP)";
+			query($sql);
+			break;
+		case 'getlist':
+			$sql = "select company.company as c_company, subclient.company as s_company, delivery.deliveryDate, delivery.uniqid, delivery.createDate from  subclient, company, delivery where subclient.cid = company.cid and subclient.sid = delivery.sid and year(delivery.deliveryDate) = substring_index('$date', '/', 1) and month(delivery.deliveryDate) = substring_index('$date', '/' , -1) GROUP BY uniqid ORDER BY date(delivery.deliveryDate)";
+			$ret = query($sql);
+			$list = [];
+			while ($v = mysql_fetch_array($ret)) {
+				array_push($list, $v);
+			}
+			print(json_encode($list));
+			break;
+		case 'del':
+			$sql = "DELETE FROM `delivery` WHERE delivery.uniqid = '$uniqid'";
+			query($sql);
+			break;
+		case 'edit':
+			$sql = "UPDATE `delivery` SET `deliveryDate`='$deliveryDate', `createDate` = CURRENT_TIMESTAMP WHERE `delivery`.`uniqid` = '$uniqid'";
 			query($sql);
 			break;
 	}

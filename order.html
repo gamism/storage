@@ -103,7 +103,7 @@
 	</table>
 	<table style="width:100%;">
 		<tr>
-			<td style="width:50%;">
+			<td style="width:50%; vertical-align: top;">
 				貨品如有破損或短少，請在送貨單內註明。<br/>
 				如未註明，視同送貨內容完整。
 			</td>
@@ -115,5 +115,10 @@
 		</tr>
 	</table>
 </div>
+<script>
+	$.get('action.php?'+ $.param({action:'order',uniqid:queryparser().uniqid}), function(xhr){
+		console.info('xhr ',xhr);
+	}, 'json');
+</script>
 </body>
 </html>

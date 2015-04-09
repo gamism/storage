@@ -47,29 +47,32 @@
 		<tr>
 			<th>品名</th>
 			<th>規格</th>
+			<th class="col-md-1">單位</th>
 			<th>數量</th>
 			<th>重量</th>
 			<th class="col-md-1 text-right"><input class="btn btn-primary" type="button" value="+" onclick="addDelRow(this, 'deliverTable', 'top_add')"/></th>
 		</tr>
 		<tr>
-			<td colspan="5" class="text-right">
-				<input type="button" class="btn btn-success" value="儲存" onclick="if(confirm('儲存出貨單,並返回聯絡人列表')) save();"/>&nbsp;
+			<td colspan="6" class="text-right">
+				<input type="button" class="btn btn-success" value="儲存" onclick="if(confirm('儲存出貨單,並返回聯絡人列表')){$(this).attr('disabled','true').attr('value','Saving...'); save();}"/>&nbsp;
 				<input type="button" class="btn btn-success" value="列印" onclick="location.href='deliverylist.html'"/>
 			</td>
 		</tr>
 	</table>
 </div>
 <script>
+	var uniqid;
 	function backSubclient()
 	{
 		location.href='index_subclient.html?'+ $.param({cid:queryparser().cid});
 	}
 	function save()
 	{
-		var _each = true;
+		var _each = true, len;
 //		console.info('name ',getByName('name').length);
 		if(getByName('name').length)
 		{
+			len = getByName('name').length - 1;
 			$.each(getByName('name'), function (k, v)
 			{
 //			console.info('k ',k, ' v ', v.value);
@@ -94,19 +97,32 @@
 							method: 'add',
 							cid: queryparser().cid,
 							sid: queryparser().sid,
+							uniqid: uniqid,
 							deliveryDate: getByName('deliveryDate')[0].value,
 							qty: getByName('qty')[k].value,
 							spec: getByName('spec')[k].value,
+							unit: getByName('unit')[k].value,
 							weight: getByName('weight')[k].value,
 							item: v.value
-						}));
+						}),function(xhr){
+							if(len == k)
+							{
+								location.href='index_subclient.html?'+ $.param({cid:queryparser().cid});
+							}
+						});
 					}
 				}
 			});
 		}
-		location.href='index_subclient.html?'+ $.param({cid:queryparser().cid});
+		else
+		{
+			location.href='index_subclient.html?'+ $.param({cid:queryparser().cid});
+		}
 	}
 	$(document).ready(function(){
+		$.get('action.php?'+ $.param({action:'getUniquid'}), function(xhr){
+			uniqid = xhr;
+		});
 		$.get('action.php?'+ $.param({action:'getTitle',sid:queryparser().sid}), function(xhr){
 //			console.info('xhr', xhr);
 			getById('clientTitle').innerHTML = xhr[0].company;
