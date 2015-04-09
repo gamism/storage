@@ -56,9 +56,10 @@
 	</table>
 </div>
 <script>
-	/*
-	 select *, month(delivery.deliveryDate), year(delivery.deliveryDate), substring_index('2015/4', '/', 1), substring_index('2015/4', '/' , -1) from `delivery` where month(delivery.deliveryDate)
-	* */
+	function order(id)
+	{
+		window.open('order.html?'+ $.param({uniqid:id}));
+	}
 	function editDeliveryDate(row, id)
 	{
 		var rowIdx = row.parentNode.parentNode.rowIndex, tmp, val, valueSet=[];
@@ -104,7 +105,7 @@
 				"<td class='col-md-3'>"+ v.s_company +"</td>" +
 				"<td class='col-md-2'>"+ v.deliveryDate +"</td>" +
 				"<td class='col-md-1'>"+ v.uniqid.substr(0,12).toUpperCase() +"</td>" +
-				'<td class="col-md-1"><input type="button" class="btn btn-primary" value="列印出貨單"/></td>' +
+				'<td class="col-md-1"><input type="button" class="btn btn-primary" value="列印出貨單" onclick="order(\''+ v.uniqid+'\')"/></td>' +
 				'<td class="col-md-2"><input type="button" class="btn btn-danger" value="修改出貨日期" onclick="editDeliveryDate(this,\''+ v.uniqid+'\')"/>&nbsp;<input type="button" class="btn btn-danger" onclick="delDelivery(\''+ v.uniqid+'\')" value="刪除"/></td>' +
 				"</tr>";
 				$('#deliveryListTbody').append(st);

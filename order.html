@@ -29,95 +29,113 @@
 </head>
 <body>
 <div class="container-fluid">
-	<h1 class="text-right">
-		<button type="button" class="btn btn-warning btn-lg" onclick="(confirm('Do you want to logout system?'))?location.href='auth.php?action=logout':false">登出</button>
-	</h1>
-	<h3 class="text-center">東勢倉儲有限公司</h3>
-	<h1 class="text-center"><span style="border-bottom: 1px solid #000;">送&nbsp;&nbsp;&nbsp;貨&nbsp;&nbsp;&nbsp;單</span></h1>
-	<table style="width:100%;">
+	<div style="width:27cm; border-bottom: 1px solid #000000;">
+		<h3 class="text-center">東勢倉儲有限公司<br/>送&nbsp;&nbsp;&nbsp;貨&nbsp;&nbsp;&nbsp;單</h3>
+	</div>
+	<table>
 		<tr>
-			<td style="width:50%;">
-				客戶名稱：
+			<td style="width:18cm">
+				<table style="width: 18cm;">
+					<tr>
+						<td nowrap style="width: 3cm;">出貨日期:</td>
+						<td id="deliveryDate"></td>
+					</tr>
+					<tr>
+						<td nowrap>出貨單號:</td>
+						<td id="deliveryID"></td>
+					</tr>
+					<tr>
+						<td nowrap>客戶名稱:</td>
+						<td id="deliveryCompany"></td>
+					</tr>
+					<tr>
+						<td nowrap>聯絡人:</td>
+						<td id="deliveryReciver"></td>
+					</tr>
+					<tr>
+						<td nowrap>連絡電話:</td>
+						<td id="deliveryTel"></td>
+					</tr>
+					<tr>
+						<td nowrap>送貨地址:</td>
+						<td id="deliveryAddr"></td>
+					</tr>
+				</table>
 			</td>
-			<td class="text-right">
-				<input type="text"/>
-			</td>
-		</tr>
-	</table>
-	<table class="table table-bordered">
-		<tr>
-			<th class="text-center">品名</th>
-			<th class="text-center">規格</th>
-			<th class="text-center">數量</th>
-			<th class="text-center">重量</th>
-			<th class="text-center">備註</th>
-			<th rowspan="10" style="width: 0.2cm; word-wrap: break-word;">１．留底</th>
-		</tr>
-		<tr>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td rowspan="8"></td>
-		</tr>
-		<tr>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-		</tr>
-		<tr>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-		</tr>
-		<tr>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-		</tr>
-		<tr>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>送貨地點</td>
-			<td colspan="3"></td>
-		</tr>
-		<tr>
-			<td>聯絡人</td>
-			<td colspan="3"></td>
-		</tr>
-		<tr>
-			<td>聯絡電話</td>
-			<td colspan="3"></td>
-		</tr>
-		<tr>
-			<td colspan="2">承運人 / 手機<br/>車號</td>
-			<td colspan="3">客戶簽收</td>
-		</tr>
-	</table>
-	<table style="width:100%;">
-		<tr>
-			<td style="width:50%; vertical-align: top;">
-				貨品如有破損或短少，請在送貨單內註明。<br/>
-				如未註明，視同送貨內容完整。
-			</td>
-			<td>
-				地址：桃園市平鎮區東勢里23鄰龍祥路219號</br>
-				電話：(03)450-8026．450-8098</br>
-				傳真：(03)450-6591
+			<td style="width:9cm">
+				<table style="width: 9cm;">
+					<tr>
+						<td>
+							地址：桃園市平鎮區東勢里23鄰龍祥路219號 <br/>
+							電話：(03)450-8026．450-8098<br/>
+							傳真：(03)450-6591
+						</td>
+					</tr>
+				</table>
 			</td>
 		</tr>
 	</table>
+	<div>
+		<table style="width:27cm; border: 1px solid #000000;">
+			<tr>
+				<th style="width: 1cm;">No.</th>
+				<th style="width: 7cm;">品名</th>
+				<th style="width: 5cm;">規格</th>
+				<th style="width: 3cm;">數量</th>
+				<th style="width: 2cm;">單位</th>
+				<th style="width: 3cm;">重量</th>
+				<th style="width: 6cm;">備註</th>
+			</tr>
+		</table>
+		<div style="min-height: 6cm; width:21cm;">
+			<table style="width:21cm;">
+				<tbody id="deliveryList"></tbody>
+			</table>
+		</div>
+		<table style="width:27cm; border: 1px solid #000000;">
+			<tr style="border-top: 1px solid black;" class="lead">
+				<td>
+					承運人 / 手機<br/>車號
+				</td>
+				<td style="vertical-align: top; border-left: 1px solid black;">
+					客戶簽收
+				</td>
+			</tr>
+		</table>
+		<table style="width:27cm;">
+			<tr>
+				<td style="text-align: right;">
+					貨品如有破損或短少，請在送貨單內註明。如未註明，視同送貨內容完整。
+				</td>
+			</tr>
+		</table>
+	</div>
 </div>
 <script>
 	$.get('action.php?'+ $.param({action:'order',uniqid:queryparser().uniqid}), function(xhr){
-		console.info('xhr ',xhr);
+//		console.info('xhr ',xhr);
+		$('title').html('出貨日期:'+xhr[0].deliveryDate+' | 出貨單號:'+xhr[0].uniqid.substr(0,12).toUpperCase());
+		getById('deliveryCompany').innerHTML = xhr[0].company;
+		getById('deliveryAddr').innerHTML = xhr[0].address;
+		getById('deliveryTel').innerHTML = xhr[0].tel;
+		getById('deliveryDate').innerHTML = xhr[0].deliveryDate;
+		getById('deliveryID').innerHTML = xhr[0].uniqid.substr(0,12).toUpperCase();
+		getById('deliveryReciver').innerHTML = xhr[0].reciver;
+		var str = '';
+		$.each(xhr, function(k,v){
+			console.info('v ',v);
+			str += '<tr>' +
+			'<td style="width: 1cm;">'+k+'</td>' +
+			'<td style="width: 7cm;">'+ v.item+'</td>' +
+			'<td style="width: 5cm;">'+ v.spec+'</td>' +
+			'<td style="width: 3cm;">'+ v.qty+'</td>' +
+			'<td style="width: 2cm;">'+ v.unit+'</td>' +
+			'<td style="width: 3cm;">'+ v.weight+'</td>' +
+			'</tr>';
+			$('#deliveryList').append(str);
+			str = '';
+		});
+		window.print();
 	}, 'json');
 </script>
 </body>

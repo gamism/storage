@@ -58,9 +58,25 @@ if($action)
 		case 'getUniquid':
 			getUniqid();
 			break;
+		case 'order':
+			getOrder();
 		default:
 			break;
 	}
+}
+
+function getOrder()
+{
+	$uniqid = $_GET['uniqid'];
+
+	$sql="select delivery.*, subclient.sid, subclient.company, subclient.tel, subclient.address, subclient.reciver from delivery, subclient
+where subclient.sid = delivery.sid and delivery.uniqid = '$uniqid'";
+	$ret = query($sql);
+	$list = [];
+	while ($v = mysql_fetch_array($ret)) {
+		array_push($list, $v);
+	}
+	print(json_encode($list));
 }
 
 function getUniqid()
