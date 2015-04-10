@@ -26,50 +26,53 @@
 	<script src="js/bootstrap-datepicker.min.js"></script>
 	<script src="locales/bootstrap-datepicker.zh-TW.min.js"></script>
 	<script src="js/common.js"></script>
+	<style>
+		body {
+			font-size: 14pt;
+		}
+	</style>
 </head>
 <body>
 <div class="container-fluid">
 	<div style="width:27cm; border-bottom: 1px solid #000000;">
-		<h3 class="text-center">東勢倉儲有限公司<br/>送&nbsp;&nbsp;&nbsp;貨&nbsp;&nbsp;&nbsp;單</h3>
+		<table style="width:27cm;">
+			<tr>
+				<td style="width:18cm;">
+					<h3 class="text-center">東勢倉儲有限公司<br/>送&nbsp;&nbsp;&nbsp;貨&nbsp;&nbsp;&nbsp;單</h3>
+				</td>
+				<td style="font-size: 12pt;">
+					地址：桃園市平鎮區東勢里23鄰龍祥路219號 <br/>
+					電話：(03)450-8026．450-8098<br/>
+					傳真：(03)450-6591
+				</td>
+			</tr>
+		</table>
 	</div>
-	<table>
+	<table style="margin: 0.5cm 0 0.5cm 0;">
 		<tr>
-			<td style="width:18cm">
-				<table style="width: 18cm;">
+			<td>
+				<table style="width: 27cm;">
 					<tr>
-						<td nowrap style="width: 3cm;">出貨日期:</td>
-						<td id="deliveryDate"></td>
-					</tr>
-					<tr>
-						<td nowrap>出貨單號:</td>
-						<td id="deliveryID"></td>
-					</tr>
-					<tr>
-						<td nowrap>客戶名稱:</td>
-						<td id="deliveryCompany"></td>
-					</tr>
-					<tr>
-						<td nowrap>聯絡人:</td>
-						<td id="deliveryReciver"></td>
-					</tr>
-					<tr>
-						<td nowrap>連絡電話:</td>
-						<td id="deliveryTel"></td>
-					</tr>
-					<tr>
-						<td nowrap>送貨地址:</td>
-						<td id="deliveryAddr"></td>
+						<td nowrap style="width:10cm;">出貨日期: <span id="deliveryDate"></span></td>
+						<td nowrap style="width:17cm;">出貨單號: <span id="deliveryID"></span></td>
 					</tr>
 				</table>
 			</td>
-			<td style="width:9cm">
-				<table style="width: 9cm;">
+		</tr>
+		<tr>
+			<td>
+				<table style="width: 27cm;">
 					<tr>
-						<td>
-							地址：桃園市平鎮區東勢里23鄰龍祥路219號 <br/>
-							電話：(03)450-8026．450-8098<br/>
-							傳真：(03)450-6591
-						</td>
+						<td nowrap>客戶名稱: <span id="deliveryCompany"></span></td>
+					</tr>
+					<tr>
+						<td nowrap>聯絡人: <span id="deliveryReciver"></span></td>
+					</tr>
+					<tr>
+						<td nowrap>連絡電話: <span id="deliveryTel"></span></td>
+					</tr>
+					<tr>
+						<td nowrap>送貨地址: <span id="deliveryAddr"></span></td>
 					</tr>
 				</table>
 			</td>
