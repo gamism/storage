@@ -51,28 +51,28 @@
 	<table style="margin: 0.5cm 0 0.5cm 0;">
 		<tr>
 			<td>
-				<table style="width: 20cm;">
+				<table style="width: 20cm; font-size:20pt;">
 					<tr>
-						<td nowrap>客戶名稱: <span id="deliveryCompany"></span></td>
+						<td nowrap>客戶名稱： <span id="deliveryCompany"></span></td>
 					</tr>
 					<tr>
-						<td nowrap>聯絡人: <span id="deliveryReciver"></span></td>
+						<td nowrap>　聯絡人： <span id="deliveryReciver"></span></td>
 					</tr>
 					<tr>
-						<td nowrap>連絡電話: <span id="deliveryTel"></span></td>
+						<td nowrap>連絡電話： <span id="deliveryTel"></span></td>
 					</tr>
 					<tr>
-						<td nowrap>送貨地址: <span id="deliveryAddr"></span></td>
+						<td nowrap>送貨地址： <span id="deliveryAddr"></span></td>
 					</tr>
 				</table>
 			</td>
 			<td style="vertical-align: top;">
 				<table style="width: 7cm;">
 					<tr>
-						<td>出貨日期: <span id="deliveryDate"></span></td>
+						<td>出貨日期&nbsp;<span id="deliveryDate"></span></td>
 					</tr>
 					<tr>
-						<td>出貨單號: <span id="deliveryID"></span></td>
+						<td>出貨單號&nbsp;<span id="deliveryID"></span></td>
 					</tr>
 				</table>
 			</td>
@@ -96,18 +96,24 @@
 			</table>
 		</div>
 		<table style="width:27cm; height: 3cm; border: 1px solid #000000;">
-			<tr style="vertical-align: top; border-top: 1px solid black;">
-				<td>
-					<h1>承運人 / 手機<br/>車號</h1>
+			<tr>
+				<td style="width:15cm;">
+					<h1>承運人 / 手機：</h1>
 				</td>
-				<td style="vertical-align: top; border-left: 1px solid black;">
-					<h1>客戶簽收</h1>
+				<td style="border-left: 1px solid black;">
+					<h1>客戶簽收：</h1>
 				</td>
+			</tr>
+			<tr>
+				<td style="width:12cm;">
+					<h1>車號：</h1>
+				</td>
+				<td style="border-left: 1px solid black;">&nbsp;</td>
 			</tr>
 		</table>
 		<table style="width:27cm;">
 			<tr>
-				<td style="text-align: right;">
+				<td style="text-align: right; font-size: 14pt;">
 					貨品如有破損或短少，請在送貨單內註明。如未註明，視同送貨內容完整。
 				</td>
 			</tr>
@@ -117,7 +123,7 @@
 <script>
 	$.get('action.php?'+ $.param({action:'order',uniqid:queryparser().uniqid}), function(xhr){
 //		console.info('xhr ',xhr);
-		$('title').html('出貨日期:'+xhr[0].deliveryDate+' | 出貨單號:'+xhr[0].uniqid.substr(0,12).toUpperCase());
+		$('title').html('東勢倉儲有限公司 - 出貨日期:'+xhr[0].deliveryDate+' - 出貨單號:'+xhr[0].uniqid.substr(0,12).toUpperCase());
 		getById('deliveryCompany').innerHTML = xhr[0].company;
 		getById('deliveryAddr').innerHTML = xhr[0].address;
 		getById('deliveryTel').innerHTML = xhr[0].tel;
