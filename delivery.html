@@ -32,8 +32,9 @@
 	<div class="row">
 		<div class="col-md-12 text-right">
 			<h1>
+				<button type="button" class="btn btn-warning btn-lg" onclick="location.href='index.html'">回客戶列表</button>
 				<button type="button" class="btn btn-warning btn-lg" onclick="backSubclient()">回聯絡人列表</button>
-			<button type="button" class="btn btn-warning btn-lg" onclick="(confirm('Do you want to logout system?'))?location.href='auth.php?action=logout':false">登出</button>
+				<button type="button" class="btn btn-warning btn-lg" onclick="(confirm('Do you want to logout system?'))?location.href='auth.php?action=logout':false">登出</button>
 			</h1>
 		</div>
 	</div>
@@ -54,8 +55,8 @@
 		</tr>
 		<tr>
 			<td colspan="6" class="text-right">
-				<input type="button" class="btn btn-success" value="儲存" onclick="if(confirm('儲存出貨單,並返回聯絡人列表')){$(this).attr('disabled','true').attr('value','Saving...'); save();}"/>&nbsp;
-				<input type="button" class="btn btn-success" value="列印" onclick="location.href='deliverylist.html'"/>
+				<input type="button" class="btn btn-success" value="儲存" onclick="if(confirm('儲存出貨單,並返回聯絡人列表')){save();}"/>&nbsp;
+				<input type="button" class="btn btn-success" value="列印" onclick="save('print')"/>
 			</td>
 		</tr>
 	</table>
@@ -66,7 +67,7 @@
 	{
 		location.href='index_subclient.html?'+ $.param({cid:queryparser().cid});
 	}
-	function save()
+	function save(action)
 	{
 		var _each = true, len;
 //		console.info('name ',getByName('name').length);
@@ -77,21 +78,14 @@
 			{
 //			console.info('k ',k, ' v ', v.value);
 				if(_each) {
-					if (v.value == '' || getByName('spec')[k].value == '')
+					if (v.value == '')
 					{
-						if(v.value == '')
-						{
-							getByName('name')[k].focus();
-							alert('品名不可為空!');
-						}
-						if(getByName('spec')[k].value == '')
-						{
-							getByName('spec')[k].focus();
-							alert('規格不可為空!');
-						}
+						getByName('name')[k].focus();
+						alert('品名不可為空!');
 						_each = false;
 					}
-					else {
+					else
+					{
 						$.get('action.php?' + $.param({
 							action: 'delivery',
 							method: 'add',
@@ -107,7 +101,15 @@
 						}),function(xhr){
 							if(len == k)
 							{
-								location.href='index_subclient.html?'+ $.param({cid:queryparser().cid});
+								if(action == 'print')
+								{
+									window.open('order.html?' + $.param({uniqid:uniqid}));
+									location.href='deliverylist.html';
+								}
+								else
+								{
+									location.href='index_subclient.html?'+ $.param({cid:queryparser().cid});
+								}
 							}
 						});
 					}

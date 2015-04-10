@@ -122,22 +122,16 @@
 			$.each(getByName('name'), function (k, v)
 			{
 //			console.info('k ',k, ' v ', v.value);
-				if(_each) {
-					if (v.value == '' || getByName('spec')[k].value == '')
+				if(_each)
+				{
+					if(v.value == '')
 					{
-						if(v.value == '')
-						{
-							getByName('name')[k].focus();
-							alert('品名不可為空!');
-						}
-						if(getByName('spec')[k].value == '')
-						{
-							getByName('spec')[k].focus();
-							alert('規格不可為空!');
-						}
+						getByName('name')[k].focus();
+						alert('品名不可為空!');
 						_each = false;
 					}
-					else {
+					else
+					{
 						$.get('action.php?' + $.param({
 							action: 'delivery',
 							method: 'add',
