@@ -57,11 +57,38 @@
 <script>
 	function datepicker_init()
 	{
-		var option_datepicker={orientation: "top auto", format:"d", language: "zh-TW"};
-		$('.input-daterange').datepicker(option_datepicker).on('hide', function(e){
-			console.info('this ',$(this));
-		});
+		var daydiff, inputs, row, option_datepicker={orientation: "top auto", format:"d", language: "zh-TW"};
+		$('.input-daterange').datepicker(option_datepicker);
 		$('.datepicker').datepicker(option_datepicker);
+
+		inputs = [$('input[name="unitprice"]'), $('input[name="stack_weight"]')];
+		$.each(inputs, function(k, v){
+			if(v) {
+				v.on('blur', function () {
+					row = this.parentNode.parentNode.parentNode.rowIndex - 1;
+					if(
+						getByName('unitprice')[row].value != '' &&
+						getByName('stack_weight')[row].value != '' &&
+						getByName('days')[row].value != ''
+					)
+					{
+						getByName('storagefee')[row].value = Math.round((getByName('stack_weight')[row].value/1000) * (getByName('unitprice')[row].value * getByName('days')[row].value));
+					}
+				});
+			}
+		});
+		daydiff = [$('input[name="end"]'), $('input[name="start"]')];
+		$.each(daydiff, function(k, v){
+			if(v) {
+				v.on('blur', function () {
+					row = this.parentNode.parentNode.parentNode.parentNode.rowIndex - 1;
+					if(getByName('end')[row].value != '' && getByName('start')[row].value != '')
+					{
+						getByName('days')[row].value = (getByName('end')[row].value - getByName('start')[row].value) + 1;
+					}
+				});
+			}
+		});
 	}
 	$(document).ready(function(){
 		$.get('action.php?'+ $.param({action:'getTitle',cid:queryparser().cid}), function(xhr){

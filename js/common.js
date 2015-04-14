@@ -52,12 +52,12 @@ function genRow(id)
 	if(id == "storage2")
 	{
 		s += '<tr>' +
-		'<td style="width:300px;">' +
+		'<td>' +
 		'<div class="input-group"><span class="input-group-addon">品名</span><input type="text" class="form-control" name="item"/></div>' +
 		'<div class="input-group"><span class="input-group-addon">規格</span><input type="text" class="form-control" name="spec"/></div>' +
 		'</td>' +
 		'<td style="width:70px;">' +
-		'<input type="text" class="datepicker form-control text-center" name="startday"/>' +
+		'<input type="text" class="datepicker form-control text-center" name="date"/>' +
 		'</td>' +
 		'<td style="width:150px;">' +
 		'<div class="input-group"><span class="input-group-addon">數量</span><input type="text" class="form-control" name="income_qty"/></div>' +
@@ -73,8 +73,8 @@ function genRow(id)
 		'</td>' +
 		'<td style="width:100px;">' +
 		'<div class="input-daterange input-group" id="datepicker">' +
-		'<div class="input-group"><span class="input-group-addon">從</span><input type="text" class="form-control" name="start" /><input type="hidden" name="from"/></div>' +
-		'<div class="input-group"><span class="input-group-addon">至</span><input type="text" class="form-control" name="end" /><input type="hidden" name="until"/></div>' +
+		'<div class="input-group"><span class="input-group-addon">從</span><input type="text" class="form-control" name="start" /></div>' +
+		'<div class="input-group"><span class="input-group-addon">至</span><input type="text" class="form-control" name="end" /></div>' +
 		'</div>' +
 		'</td>' +
 		'<td>' +
@@ -85,8 +85,8 @@ function genRow(id)
 		'<span class="input-group-addon">倉租</span><input name="storagefee" type="text" class="form-control text-center" readonly/><span class="input-group-addon">裝卸</span><input name="unload" type="text" class="form-control"/>' +
 		'</div>' +
 		'</td>' +
-		'<td class="text-center">' +
-		'<input class="btn btn-sm btn-primary" type="button" value="+" onclick="addDelRow(this, \'storage2\', \'add\')"/> <input class="btn btn-sm btn-danger" type="button" value=" -" onclick="addDelRow(this, \'storage2\', \'del\')"/>' +
+		'<td style="width:80px;" class="text-center">' +
+		'<input class="btn btn-sm btn-primary" type="button" value="+" onclick="addDelRow(this, \'storage2\', \'add\');datepicker_init(this);"/> <input class="btn btn-sm btn-danger" type="button" value=" -" onclick="addDelRow(this, \'storage2\', \'del\');datepicker_init(this);"/>' +
 		'</td>' +
 		'</tr>';
 	}
