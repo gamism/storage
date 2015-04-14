@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<head lang="zh-tw">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	<title>東勢倉儲有限公司</title>
+
+	<script src="commonjs.php"></script>
+
+	<!-- Bootstrap -->
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/bootstrap-datepicker3.min.css" rel="stylesheet">
+
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<script src="js/jquery.1.11.2.min.js"></script>
+	<!-- Include all compiled plugins (below), or include individual files as needed -->
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/bootstrap-datepicker.min.js"></script>
+	<script src="locales/bootstrap-datepicker.zh-TW.min.js"></script>
+	<script src="js/common.js"></script>
+</head>
+<body>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-6"><h1 id="companyTitle"></h1></div>
+		<div class="col-md-6 text-right">
+			<h1>
+				<button type="button" class="btn btn-warning btn-lg" onclick="location.href='index.html'">回客戶列表</button>
+			<button type="button" class="btn btn-warning btn-lg" onclick="(confirm('Do you want to logout system?'))?location.href='auth.php?action=logout':false">登出</button>
+			</h1>
+		</div>
+	</div>
+	<div>
+		<table class="table table-bordered" id="storage2">
+			<tr>
+				<th style="min-width: 200px;">品名/規格</th>
+				<th nowrap>日期</th>
+				<th>進倉</th>
+				<th>出倉</th>
+				<th>庫存</th>
+				<th nowrap>儲存期間</th>
+				<th>天數/單價/倉租/裝卸費</th>
+				<th><input class="btn btn-primary" type="button" value="+" onclick="addDelRow(this, 'storage2', 'add');datepicker_init();"/></th>
+			</tr>
+		</table>
+	</div>
+</div>
+
+<script>
+	function datepicker_init()
+	{
+		var option_datepicker={orientation: "top auto", format:"d", language: "zh-TW"};
+		$('.input-daterange').datepicker(option_datepicker).on('hide', function(e){
+			console.info('this ',$(this));
+		});
+		$('.datepicker').datepicker(option_datepicker);
+	}
+	$(document).ready(function(){
+		$.get('action.php?'+ $.param({action:'getTitle',cid:queryparser().cid}), function(xhr){
+//			console.info('xhr', xhr);
+			getById('companyTitle').innerHTML = xhr[0].company;
+		},'json');
+		datepicker_init();
+	});
+</script>
+</body>
+</html>

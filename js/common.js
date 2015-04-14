@@ -49,6 +49,47 @@ function genRow(id)
 {
 	id = id || 'storage';
 	var i,s = '';
+	if(id == "storage2")
+	{
+		s += '<tr>' +
+		'<td style="width:300px;">' +
+		'<div class="input-group"><span class="input-group-addon">品名</span><input type="text" class="form-control" name="item"/></div>' +
+		'<div class="input-group"><span class="input-group-addon">規格</span><input type="text" class="form-control" name="spec"/></div>' +
+		'</td>' +
+		'<td style="width:70px;">' +
+		'<input type="text" class="datepicker form-control text-center" name="startday"/>' +
+		'</td>' +
+		'<td style="width:150px;">' +
+		'<div class="input-group"><span class="input-group-addon">數量</span><input type="text" class="form-control" name="income_qty"/></div>' +
+		'<div class="input-group"><span class="input-group-addon">重量</span><input type="text" class="form-control" name="income_weight"/></div>' +
+		'</td>' +
+		'<td style="width:150px;">' +
+		'<div class="input-group"><span class="input-group-addon">數量</span><input type="text" class="form-control" name="outcome_qty"/></div>' +
+		'<div class="input-group"><span class="input-group-addon">重量</span><input type="text" class="form-control" name="outcome_weight"/></div>' +
+		'</td>' +
+		'<td style="width:150px;">' +
+		'<div class="input-group"><span class="input-group-addon">數量</span><input type="text" class="form-control" name="stack_qty"/></div>' +
+		'<div class="input-group"><span class="input-group-addon">重量</span><input type="text" class="form-control" name="stack_weight"/></div>' +
+		'</td>' +
+		'<td style="width:100px;">' +
+		'<div class="input-daterange input-group" id="datepicker">' +
+		'<div class="input-group"><span class="input-group-addon">從</span><input type="text" class="form-control" name="start" /><input type="hidden" name="from"/></div>' +
+		'<div class="input-group"><span class="input-group-addon">至</span><input type="text" class="form-control" name="end" /><input type="hidden" name="until"/></div>' +
+		'</div>' +
+		'</td>' +
+		'<td>' +
+		'<div class="input-group">' +
+		'<span class="input-group-addon">天數</span><input name="days" type="text" class="form-control text-center" readonly/><span class="input-group-addon">單價</span><input name="unitprice" type="text" class="form-control text-center"/>' +
+		'</div>' +
+		'<div class="input-group">' +
+		'<span class="input-group-addon">倉租</span><input name="storagefee" type="text" class="form-control text-center" readonly/><span class="input-group-addon">裝卸</span><input name="unload" type="text" class="form-control"/>' +
+		'</div>' +
+		'</td>' +
+		'<td class="text-center">' +
+		'<input class="btn btn-sm btn-primary" type="button" value="+" onclick="addDelRow(this, \'storage2\', \'add\')"/> <input class="btn btn-sm btn-danger" type="button" value=" -" onclick="addDelRow(this, \'storage2\', \'del\')"/>' +
+		'</td>' +
+		'</tr>';
+	}
 	if(id == 'deliverTable')
 	{
 		s += '<tr>';
@@ -159,15 +200,16 @@ function genRow(id)
 
 function addDelRow(row, id, method)
 {
+	var t, tr;
 	if(method == 'top_add')
 	{
-		var t = document.getElementById(id), tr;
+		t = document.getElementById(id);
 		tr = t.insertRow(t.rows.length - 1);
 		tr.innerHTML = genRow(id);
 	}
 	if(method == 'add')
 	{
-		var t = document.getElementById(id), tr;
+		t = document.getElementById(id);
 		tr = t.insertRow(row.parentNode.parentNode.rowIndex + 1);
 		tr.innerHTML = genRow(id);
 	}
