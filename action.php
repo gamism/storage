@@ -60,9 +60,26 @@ if($action)
 			break;
 		case 'order':
 			getOrder();
+			break;
+		case 'monthreport':
+			monthReport();
+			break;
 		default:
 			break;
 	}
+}
+
+function monthReport()
+{
+	$cid = $_GET['cid'];
+
+	$sql="select delivery.* from delivery where delivery.cid = '$cid' ORDER BY delivery.item";
+	$ret = query($sql);
+	$list = [];
+	while ($v = mysql_fetch_array($ret)) {
+		array_push($list, $v);
+	}
+	print(json_encode($list));
 }
 
 function getOrder()
@@ -178,6 +195,8 @@ function subclient()
 			$sid = $_GET['sid'];
 			$sql = "DELETE FROM `storage`.`subclient` WHERE `subclient`.`sid` = $sid";
 			query($sql);
+			$sql = "DELETE FROM `storage`.`delivery` WHERE `delivery`.`sid` = $sid";
+			query($sql);
 			break;
 		case 'edit':
 			$company = $_GET['company'];
@@ -198,6 +217,8 @@ function delCompany()
 	$sql = "DELETE FROM `storage`.`company` WHERE `company`.`cid` = $cid";
 	query($sql);
 	$sql = "DELETE FROM `storage`.`subclient` WHERE `subclient`.`cid` = $cid";
+	query($sql);
+	$sql = "DELETE FROM `storage`.`delivery` WHERE `delivery`.`cid` = $cid";
 	query($sql);
 }
 

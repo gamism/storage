@@ -21,6 +21,11 @@ function getByName(name)
 	return document.getElementsByName(name)
 }
 
+function money(m)
+{
+	return accounting.formatMoney(m, '', 0)
+}
+
 function queryparser()
 {
 	var data = {}, s;
@@ -54,7 +59,7 @@ function genRow(id)
 		s += '<tr>' +
 		'<td>' +
 		'<div class="input-group"><span class="input-group-addon">品名</span><input type="text" class="form-control" name="item"/></div>' +
-		'<div class="input-group"><span class="input-group-addon">規格</span><input type="text" class="form-control" name="spec"/></div>' +
+		'<div class="input-group"><span class="input-group-addon">規格</span><input type="text" class="form-control" name="spec"/><span class="input-group-addon">單位</span><input name="unit" type="text" class="form-control"/></div>' +
 		'</td>' +
 		'<td style="width:70px;">' +
 		'<input type="text" class="datepicker form-control text-center" name="date"/>' +
@@ -71,21 +76,22 @@ function genRow(id)
 		'<div class="input-group"><span class="input-group-addon">數量</span><input type="text" class="form-control" name="stack_qty"/></div>' +
 		'<div class="input-group"><span class="input-group-addon">重量</span><input type="text" class="form-control" name="stack_weight"/></div>' +
 		'</td>' +
-		'<td style="width:100px;">' +
-		'<div class="input-daterange input-group" id="datepicker">' +
-		'<div class="input-group"><span class="input-group-addon">從</span><input type="text" class="form-control" name="start" /></div>' +
-		'<div class="input-group"><span class="input-group-addon">至</span><input type="text" class="form-control" name="end" /></div>' +
-		'</div>' +
+		'<td style="width:120px;">' +
+		'<div class="input-group"><span class="input-group-addon">從</span><input type="text" class="form-control datepicker_start text-center" name="start" /></div>' +
+		'<div class="input-group"><span class="input-group-addon">至</span><input type="text" class="form-control datepicker_end text-center" name="end" /></div>' +
 		'</td>' +
 		'<td>' +
 		'<div class="input-group">' +
-		'<span class="input-group-addon">天數</span><input name="days" type="text" class="form-control text-center" readonly/><span class="input-group-addon">單價</span><input name="unitprice" type="text" class="form-control text-center"/>' +
+		'<span class="input-group-addon">天數</span><input name="days" type="text" class="form-control text-center" readonly/><span class="input-group-addon">單價</span><input name="unitprice" type="text" class="form-control"/>' +
 		'</div>' +
 		'<div class="input-group">' +
 		'<span class="input-group-addon">倉租</span><input name="storagefee" type="text" class="form-control text-center" readonly/><span class="input-group-addon">裝卸</span><input name="unload" type="text" class="form-control"/>' +
 		'</div>' +
 		'</td>' +
 		'<td style="width:80px;" class="text-center">' +
+		'<input type="hidden" name="did"/>' +
+		'<input type="hidden" name="date_start"/>' +
+		'<input type="hidden" name="date_end"/>' +
 		'<input class="btn btn-sm btn-primary" type="button" value="+" onclick="addDelRow(this, \'storage2\', \'add\');datepicker_init(this);"/> <input class="btn btn-sm btn-danger" type="button" value=" -" onclick="addDelRow(this, \'storage2\', \'del\');datepicker_init(this);"/>' +
 		'</td>' +
 		'</tr>';

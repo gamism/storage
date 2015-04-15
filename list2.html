@@ -39,6 +39,7 @@
 		</div>
 	</div>
 	<div>
+		<div class="bg-warning" id="record"><h3>Loading...</h3></div>
 		<table class="table table-bordered" id="storage2">
 			<tr>
 				<th style="min-width: 200px;">品名/規格</th>
@@ -48,20 +49,54 @@
 				<th>庫存</th>
 				<th nowrap>儲存期間</th>
 				<th>天數/單價/倉租/裝卸費</th>
-				<th><input class="btn btn-primary" type="button" value="+" onclick="addDelRow(this, 'storage2', 'add');datepicker_init();"/></th>
+				<th><input class="btn btn-primary" type="button" value="+" onclick="addDelRow(this, 'storage2', 'top_add');datepicker_init();"/></th>
+			</tr>
+			<tr>
+				<td colspan="6"></td>
+				<td colspan="2">倉租小記：<span id="total_storagefee"></span>&nbsp;&nbsp;裝卸小記：<span id="total_unload"></span></td>
 			</tr>
 		</table>
 	</div>
 </div>
 
 <script>
+	function qcount(row)
+	{
+		getByName('days')[row].value = ((getByName('date_end')[row].value - getByName('date_start')[row].value) / (1000 * 24 * 3600)) + 1;
+
+		//count
+		getByName('storagefee')[row].value = Math.round((getByName('stack_weight')[row].value/1000) * (getByName('unitprice')[row].value * getByName('days')[row].value));
+		var tmp_sum=0, i;
+		for(i=0;i<getByName('storagefee').length;i++)
+		{
+			tmp_sum += parseInt((getByName('storagefee')[i].value)?getByName('storagefee')[i].value:0);
+		}
+		getById('total_storagefee').innerHTML = money(tmp_sum);
+	}
 	function datepicker_init()
 	{
-		var daydiff, inputs, row, option_datepicker={orientation: "top auto", format:"d", language: "zh-TW"};
-		$('.input-daterange').datepicker(option_datepicker);
+		var inputs, row, option_datepicker={orientation: "top auto", format:"m/d", language: "zh-TW"};
+		$('.datepicker_start').datepicker(option_datepicker).on('hide', function(e){
+			var row = this.parentNode.parentNode.parentNode.rowIndex - 1;
+			getByName('date_start')[row].value = new Date(e.date).getTime();
+		});
+		$('.datepicker_end').datepicker(option_datepicker).on('hide', function(e){
+			var row = this.parentNode.parentNode.parentNode.rowIndex - 1;
+			getByName('date_end')[row].value = new Date(e.date).getTime();
+		});
 		$('.datepicker').datepicker(option_datepicker);
 
-		inputs = [$('input[name="unitprice"]'), $('input[name="stack_weight"]')];
+
+
+		$('input[name="unload"]').on('blur',function(){
+			var tmp_sum=0, i;
+			for(i=0;i<getByName('unload').length;i++)
+			{
+				tmp_sum += parseInt((getByName('unload')[i].value)?getByName('unload')[i].value:0);
+			}
+			getById('total_unload').innerHTML = money(tmp_sum);
+		});
+		inputs = [$('input[name="unitprice"]'), $('input[name="stack_weight"]'), $('input[name="end"]'), $('input[name="start"]')];
 		$.each(inputs, function(k, v){
 			if(v) {
 				v.on('blur', function () {
@@ -72,19 +107,11 @@
 						getByName('days')[row].value != ''
 					)
 					{
-						getByName('storagefee')[row].value = Math.round((getByName('stack_weight')[row].value/1000) * (getByName('unitprice')[row].value * getByName('days')[row].value));
+						qcount(row);
 					}
-				});
-			}
-		});
-		daydiff = [$('input[name="end"]'), $('input[name="start"]')];
-		$.each(daydiff, function(k, v){
-			if(v) {
-				v.on('blur', function () {
-					row = this.parentNode.parentNode.parentNode.parentNode.rowIndex - 1;
 					if(getByName('end')[row].value != '' && getByName('start')[row].value != '')
 					{
-						getByName('days')[row].value = (getByName('end')[row].value - getByName('start')[row].value) + 1;
+						qcount(row);
 					}
 				});
 			}
@@ -94,8 +121,25 @@
 		$.get('action.php?'+ $.param({action:'getTitle',cid:queryparser().cid}), function(xhr){
 //			console.info('xhr', xhr);
 			getById('companyTitle').innerHTML = xhr[0].company;
+			$.get('action.php?'+ $.param({action:'monthreport',cid:queryparser().cid}), function(xhr){
+				if(xhr.length)
+				{
+					$.each(xhr, function (i, v)
+					{
+						addDelRow('', 'storage2', 'top_add');
+						getByName('item')[i].value = v.item;
+						getByName('spec')[i].value = v.spec;
+						getByName('unit')[i].value = v.unit;
+						getByName('outcome_qty')[i].value = v.qty;
+						getByName('outcome_weight')[i].value = v.weight;
+						getByName('date')[i].value = v.deliveryDate.substr(5);
+						getByName('did')[i].value = v.did;
+					});
+				}
+				datepicker_init();
+				$('#record').fadeOut();
+			}, 'json');
 		},'json');
-		datepicker_init();
 	});
 </script>
 </body>
