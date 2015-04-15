@@ -121,7 +121,7 @@
 		$.get('action.php?'+ $.param({action:'getTitle',cid:queryparser().cid}), function(xhr){
 //			console.info('xhr', xhr);
 			getById('companyTitle').innerHTML = xhr[0].company;
-			$.get('action.php?'+ $.param({action:'monthreport',cid:queryparser().cid}), function(xhr){
+			$.get('action.php?'+ $.param({action:'monthreport',cid:queryparser().cid, month:queryparser().month}), function(xhr){
 				if(xhr.length)
 				{
 					$.each(xhr, function (i, v)

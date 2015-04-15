@@ -66,10 +66,10 @@
 		<table class="table table-bordered" id="customerListTable">
 			<tr>
 				<th class="col-md-2">公司名稱</th>
-				<th class="col-md-2">電話</th>
+				<th class="col-md-1">電話</th>
 				<th class="col-md-4">地址</th>
 				<th nowrap>聯絡人</th>
-				<th nowrap>月結</th>
+				<th style="width:200px;" nowrap>月結</th>
 				<th class="col-md-2"></th>
 			</tr>
 			<tbody id="customerList"></tbody>
@@ -85,6 +85,12 @@
 				getById('customerList').innerHTML="";
 				$.each(info, function(k, v){
 					company.showCustomer(v.company, v.tel, v.address, v.cid);
+					getByName('month')[k].value = new Date().getMonth() + 1 + ' 月';
+					getByName('realMonth')[k].value = new Date().getMonth() + 1;
+				});
+				$('.datepicker_getMonth').datepicker({format:'m 月',minViewMode:1,language: "zh-TW", orientation: "top auto"}).on('changeMonth',function(e){
+					var row = this.parentNode.parentNode.parentNode.rowIndex - 1;
+					getByName('realMonth')[row].value = new Date(e.date).getMonth() + 1;
 				});
 			}
 		}, 'json');
@@ -123,6 +129,11 @@
 		}
 //		company.showCustomer(com.value, tel.value, addr.value);
 	};
+	company.goMonth = function(id, _this)
+	{
+		var row = _this.parentNode.parentNode.parentNode.rowIndex - 1;
+		location.href='list2.html?'+ $.param({cid:id, month:getByName('realMonth')[row].value});
+	};
 	company.showCustomer = function(com, tel, addr, id)
 	{
 		var str='',list;
@@ -133,8 +144,8 @@
 		'<td>'+tel+'</td>' +
 		'<td>'+addr+'</td>' +
 		'<td><input type="button" class="btn btn-primary" value="聯絡人列表" onclick="location.href=\'index_subclient.html?'+ $.param({cid:id})+'\'"/></td>' +
-		'<td><input type="button" class="btn btn-primary" value="月結報表" onclick="location.href=\'list2.html?'+ $.param({cid:id})+'\'"/></td>' +
-		'<td><input type="button" class="btn btn-danger" value="編輯" onclick="company.editCustomer(this,'+id+')"/> <input type="button" class="btn btn-danger" value="刪除" onclick="if(confirm(\'Delete this company?\')){addDelRow(this, \'customerListTable\', \'del\');company.delCustomer('+id+')}"/></td>' +
+		'<td><span class="form-inline"><input type="button" class="btn btn-primary" value="月結報表" onclick="company.goMonth('+ id +', this)"/>&nbsp;<input style="width:70px;" name="month" type="text" class="datepicker_getMonth form-control text-center" readonly/><input type="hidden" name="realMonth"/></td>' +
+		'<td><input type="button" class="btn btn-danger" value="編輯" onclick="company.editCustomer(this,'+id+')"/> <input type="button" class="btn btn-danger" value="刪除" onclick="if(confirm(\'Delete this company?\')){addDelRow(this, \'customerListTable\', \'del\');company.delCustomer('+id+')}"/></span></td>' +
 		'</tr>';
 
 		list.append(str);
