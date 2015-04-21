@@ -49,13 +49,16 @@
 				<th>庫存</th>
 				<th nowrap>儲存期間</th>
 				<th>天數/單價/倉租/裝卸費</th>
-				<th><input class="btn btn-primary" type="button" value="+" onclick="addDelRow(this, 'storage2', 'top_add');datepicker_init();"/></th>
+				<th><input style="display:none;" class="btn btn-primary" type="button" value="+" onclick="addDelRow(this, 'storage2', 'top_add');datepicker_init();"/></th>
 			</tr>
 			<tr>
 				<td colspan="6"></td>
 				<td colspan="2">倉租小記：<span id="total_storagefee"></span>&nbsp;&nbsp;裝卸小記：<span id="total_unload"></span></td>
 			</tr>
 		</table>
+	</div>
+	<div class="text-right">
+		<button class="btn btn-success">儲存</button>&nbsp;<button class="btn btn-success">儲存並列印</button>
 	</div>
 </div>
 

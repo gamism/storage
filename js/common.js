@@ -92,7 +92,7 @@ function genRow(id)
 		'<input type="hidden" name="did"/>' +
 		'<input type="hidden" name="date_start"/>' +
 		'<input type="hidden" name="date_end"/>' +
-		'<input class="btn btn-sm btn-primary" type="button" value="+" onclick="addDelRow(this, \'storage2\', \'add\');datepicker_init(this);"/> <input class="btn btn-sm btn-danger" type="button" value=" -" onclick="addDelRow(this, \'storage2\', \'del\');datepicker_init(this);"/>' +
+		'<span style="display:none;"><input class="btn btn-sm btn-primary" type="button" value="+" onclick="addDelRow(this, \'storage2\', \'add\');datepicker_init(this);"/> <input class="btn btn-sm btn-danger" type="button" value=" -" onclick="addDelRow(this, \'storage2\', \'del\');datepicker_init(this);"/></span>' +
 		'</td>' +
 		'</tr>';
 	}
