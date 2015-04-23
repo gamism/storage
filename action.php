@@ -73,8 +73,9 @@ function monthReport()
 {
 	$cid = $_GET['cid'];
 	$m = $_GET['month'];
+	$y = $_GET['year'];
 
-	$sql="select delivery.* from delivery where year(delivery.deliveryDate) = year(CURRENT_TIMESTAMP) and month(delivery.deliveryDate) = '$m' and delivery.cid = '$cid' ORDER BY delivery.item";
+	$sql="select delivery.* from delivery where year(delivery.deliveryDate) = '$y' and month(delivery.deliveryDate) = '$m' and delivery.cid = '$cid' ORDER BY delivery.item";
 	$ret = query($sql);
 	$list = [];
 	while ($v = mysql_fetch_array($ret)) {

@@ -58,11 +58,27 @@
 		</table>
 	</div>
 	<div class="text-right">
-		<button class="btn btn-success">儲存</button>&nbsp;<button class="btn btn-success">儲存並列印</button>
+		<button class="btn btn-success" onclick="savechanges()">儲存</button>&nbsp;<button class="btn btn-success">儲存並列印</button>
+	</div>
+	<div class="modal fade">
+		<div class="modal-lg modal-dialog">
+			<div class="modal-content">
+				<div class="modal-body">
+					Saving Data ...
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
 
 <script>
+	function savechanges()
+	{
+		$('.modal').modal('show');
+		$.get('action.php?'+ $.param({action:'getTitle',cid:queryparser().cid}),function(){
+			$('.modal').modal('hide');
+		});
+	}
 	function qcount(row)
 	{
 		getByName('days')[row].value = ((getByName('date_end')[row].value - getByName('date_start')[row].value) / (1000 * 24 * 3600)) + 1;
@@ -124,7 +140,7 @@
 		$.get('action.php?'+ $.param({action:'getTitle',cid:queryparser().cid}), function(xhr){
 //			console.info('xhr', xhr);
 			getById('companyTitle').innerHTML = xhr[0].company;
-			$.get('action.php?'+ $.param({action:'monthreport',cid:queryparser().cid, month:queryparser().month}), function(xhr){
+			$.get('action.php?'+ $.param({action:'monthreport',cid:queryparser().cid, month:queryparser().month, year:queryparser().year}), function(xhr){
 				if(xhr.length)
 				{
 					$.each(xhr, function (i, v)
