@@ -27,17 +27,43 @@
 	<script src="locales/bootstrap-datepicker.zh-TW.min.js"></script>
 	<script src="js/common.js"></script>
 	<style>
+		@page
+		{
+			size: 9.5in 11in;   /* auto is the current printer page size */
+			margin: 0 15mm 0 0;  /* this affects the margin in the printer settings */
+		}
 		body {
 			font-size: 16pt;
+		}
+		.paperWidth {
+			width: 27cm;
+		}
+		.colNo {
+			width:2cm;
+		}
+		.colItem {
+			width: 6cm;
+		}
+		.colSpec {
+			width: 4cm;
+		}
+		.colQty {
+			width: 3cm;
+		}
+		.colUnit {
+			width: 3cm;
+		}
+		.colWeight {
+			width: 3cm;
 		}
 	</style>
 </head>
 <body>
 <div class="container-fluid">
-	<div style="width:27cm; border-bottom: 1px solid #000000;">
-		<table style="width:27cm;">
+	<div class="paperWidth" style="border-bottom: 1px solid #000000;">
+		<table class="paperWidth">
 			<tr>
-				<td style="width:18cm;">
+				<td style="width:18cm; vertical-align: top;">
 					<h1 class="text-center">東勢倉儲有限公司<br/>送&nbsp;&nbsp;&nbsp;貨&nbsp;&nbsp;&nbsp;單</h1>
 				</td>
 				<td style="font-size: 12pt;">
@@ -51,7 +77,7 @@
 	<table style="margin: 0.5cm 0 0.5cm 0;">
 		<tr>
 			<td>
-				<table style="width: 20cm; font-size:20pt;">
+				<table style="width: 20cm; font-size:18pt;">
 					<tr>
 						<td nowrap>客戶名稱： <span id="deliveryCompany"></span></td>
 					</tr>
@@ -67,7 +93,7 @@
 				</table>
 			</td>
 			<td style="vertical-align: top;">
-				<table style="width: 7cm;">
+				<table>
 					<tr>
 						<td>出貨日期&nbsp;<span id="deliveryDate"></span></td>
 					</tr>
@@ -79,39 +105,35 @@
 		</tr>
 	</table>
 	<div>
-		<table style="width:27cm; border: 1px solid #000000;">
-			<tr>
-				<th style="width: 1cm;">No.</th>
-				<th style="width: 7cm;">品名</th>
-				<th style="width: 5cm;">規格</th>
-				<th style="width: 3cm;">數量</th>
-				<th style="width: 2cm;">單位</th>
-				<th style="width: 3cm;">重量</th>
-				<th style="width: 6cm;">備註</th>
+		<table class="paperWidth" style="border: 1px solid #000000;">
+			<tr style="border-bottom: 1px solid black;">
+				<th class="colNo">No.</th>
+				<th class="colItem">品名</th>
+				<th class="colSpec">規格</th>
+				<th class="colQty">數量</th>
+				<th class="colUnit">單位</th>
+				<th class="colWeight">重量</th>
+				<th>備註</th>
 			</tr>
+			<tbody id="deliveryList"></tbody>
 		</table>
-		<div style="min-height: 6cm; width:21cm;">
-			<table style="width:21cm;">
-				<tbody id="deliveryList"></tbody>
-			</table>
-		</div>
-		<table style="width:27cm; height: 3cm; border: 1px solid #000000;">
+		<table class="paperWidth" style="border: 1px solid #000000;">
 			<tr>
 				<td style="width:15cm;">
-					<h1>承運人 / 手機：</h1>
+					<h2>承運人 / 手機：</h2>
 				</td>
 				<td style="border-left: 1px solid black;">
-					<h1>客戶簽收：</h1>
+					<h2>客戶簽收：</h2>
 				</td>
 			</tr>
 			<tr>
 				<td style="width:12cm;">
-					<h1>車號：</h1>
+					<h2>車號：</h2>
 				</td>
 				<td style="border-left: 1px solid black;">&nbsp;</td>
 			</tr>
 		</table>
-		<table style="width:27cm;">
+		<table class="paperWidth">
 			<tr>
 				<td style="text-align: right; font-size: 14pt;">
 					貨品如有破損或短少，請在送貨單內註明。如未註明，視同送貨內容完整。
@@ -123,7 +145,8 @@
 <script>
 	$.get('action.php?'+ $.param({action:'order',uniqid:queryparser().uniqid}), function(xhr){
 //		console.info('xhr ',xhr);
-		$('title').html('東勢倉儲有限公司 - 出貨日期:'+xhr[0].deliveryDate+' - 出貨單號:'+xhr[0].uniqid.substr(0,12).toUpperCase());
+//		$('title').html('東勢倉儲有限公司 - 出貨日期:'+xhr[0].deliveryDate+' - 出貨單號:'+xhr[0].uniqid.substr(0,12).toUpperCase());
+		$('title').html('&nbsp;');
 		getById('deliveryCompany').innerHTML = xhr[0].company;
 		getById('deliveryAddr').innerHTML = xhr[0].address;
 		getById('deliveryTel').innerHTML = xhr[0].tel;
@@ -132,18 +155,37 @@
 		getById('deliveryReciver').innerHTML = xhr[0].reciver;
 		var str = '';
 		$.each(xhr, function(k,v){
-			console.info('v ',v);
+//			console.info('v ',v);
 			str += '<tr>' +
-			'<td style="width: 1cm;">'+ (k+1)+'</td>' +
-			'<td style="width: 7cm;">'+ v.item+'</td>' +
-			'<td style="width: 5cm;">'+ v.spec+'</td>' +
-			'<td style="width: 3cm;">'+ v.qty+'</td>' +
-			'<td style="width: 2cm;">'+ v.unit+'</td>' +
-			'<td style="width: 3cm;">'+ v.weight+'</td>' +
+			'<td>'+ (k+1)+'</td>' +
+			'<td>'+ v.item+'</td>' +
+			'<td>'+ v.spec+'</td>' +
+			'<td>'+ v.qty+'</td>' +
+			'<td>'+ v.unit+'</td>' +
+			'<td>'+ v.weight+'</td>' +
+			'<td style="border-left: 1px solid black;">&nbsp;</td>' +
 			'</tr>';
 			$('#deliveryList').append(str);
 			str = '';
 		});
+		var maxRow = 7;
+		if(xhr.length<=maxRow)
+		{
+			for(var i=0;i<(maxRow-xhr.length);i++)
+			{
+				str += '<tr>' +
+				'<td>&nbsp;</td>' +
+				'<td>&nbsp;</td>' +
+				'<td>&nbsp;</td>' +
+				'<td>&nbsp;</td>' +
+				'<td>&nbsp;</td>' +
+				'<td>&nbsp;</td>' +
+				'<td style="border-left: 1px solid black;">&nbsp;</td>' +
+				'</tr>';
+				$('#deliveryList').append(str);
+				str = '';
+			}
+		}
 		window.print();
 	}, 'json');
 </script>
