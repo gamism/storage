@@ -100,7 +100,7 @@ where subclient.sid = delivery.sid and delivery.uniqid = '$uniqid'";
 
 function getUniqid()
 {
-	echo md5(uniqid());
+	echo uniqid();
 }
 
 function delivery()

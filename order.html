@@ -77,7 +77,7 @@
 	<table style="margin: 0.5cm 0 0.5cm 0;">
 		<tr>
 			<td>
-				<table style="width: 20cm; font-size:18pt;">
+				<table style="width: 19cm; font-size:18pt;">
 					<tr>
 						<td nowrap>客戶名稱： <span id="deliveryCompany"></span></td>
 					</tr>
@@ -151,7 +151,7 @@
 		getById('deliveryAddr').innerHTML = xhr[0].address;
 		getById('deliveryTel').innerHTML = xhr[0].tel;
 		getById('deliveryDate').innerHTML = xhr[0].deliveryDate;
-		getById('deliveryID').innerHTML = xhr[0].uniqid.substr(0,12).toUpperCase();
+		getById('deliveryID').innerHTML = xhr[0].uniqid.substr(0,13).toUpperCase();
 		getById('deliveryReciver').innerHTML = xhr[0].reciver;
 		var str = '';
 		$.each(xhr, function(k,v){
