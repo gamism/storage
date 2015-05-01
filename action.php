@@ -116,14 +116,22 @@ function delivery()
 	$weight = $_GET['weight'];
 	$method = $_GET['method'];
 	$date = $_GET['date'];
+	$type = $_GET['type'];
 	switch($method)
 	{
 		case 'add':
-			$sql = "INSERT INTO `storage`.`delivery` (`cid`, `sid`, `did`, `uniqid`, `deliveryDate`, `item`, `spec`, `unit`, `qty`, `weight`, `createDate`) VALUES ('$cid', '$sid', NULL, '$uniqid' ,'$deliveryDate', '$item', '$spec', '$unit', '$qty', '$weight', CURRENT_TIMESTAMP)";
+			if($type == "income")
+			{
+				$sql = "INSERT INTO `storage`.`delivery` (`cid`, `sid`, `did`, `uniqid`, `deliveryDate`, `item`, `spec`, `unit`, `income_qty`, `income_weight`, `createDate`, `type`) VALUES ('$cid', '$sid', NULL, '$uniqid' ,'$deliveryDate', '$item', '$spec', '$unit', '$qty', '$weight', CURRENT_TIMESTAMP, 'income')";
+			}
+			else
+			{
+				$sql = "INSERT INTO `storage`.`delivery` (`cid`, `sid`, `did`, `uniqid`, `deliveryDate`, `item`, `spec`, `unit`, `qty`, `weight`, `createDate`) VALUES ('$cid', '$sid', NULL, '$uniqid' ,'$deliveryDate', '$item', '$spec', '$unit', '$qty', '$weight', CURRENT_TIMESTAMP)";
+			}
 			query($sql);
 			break;
 		case 'getlist':
-			$sql = "select company.company as c_company, subclient.company as s_company, delivery.deliveryDate, delivery.uniqid, delivery.createDate from  subclient, company, delivery where subclient.cid = company.cid and subclient.sid = delivery.sid and year(delivery.deliveryDate) = substring_index('$date', '/', 1) and month(delivery.deliveryDate) = substring_index('$date', '/' , -1) GROUP BY uniqid ORDER BY date(delivery.deliveryDate)";
+			$sql = "select company.company as c_company, subclient.company as s_company, delivery.deliveryDate, delivery.uniqid, delivery.createDate from  subclient, company, delivery where subclient.cid = company.cid and subclient.sid = delivery.sid and year(delivery.deliveryDate) = substring_index('$date', '/', 1) and month(delivery.deliveryDate) = substring_index('$date', '/' , -1) and delivery.type = 'delivery' GROUP BY uniqid ORDER BY date(delivery.deliveryDate)";
 			$ret = query($sql);
 			$list = [];
 			while ($v = mysql_fetch_array($ret)) {
@@ -241,7 +249,8 @@ function addCompany()
 	$company = $_REQUEST['company'];
 	$tel = $_REQUEST['tel'];
 	$address = $_REQUEST['address'];
-	$sql = "INSERT INTO `storage`.`company` (`cid`, `company`, `tel`, `address`, `createDate`) VALUES (NULL, '$company', '$tel', '$address', CURRENT_TIMESTAMP)";
+	$balanceday = $_GET['balanceday'];
+	$sql = "INSERT INTO `storage`.`company` (`cid`, `company`, `tel`, `address`, `balanceday`, `createDate`) VALUES (NULL, '$company', '$tel', '$address', '$balanceday', CURRENT_TIMESTAMP)";
 	query($sql);
 }
 
@@ -251,7 +260,8 @@ function editCompany()
 	$company = $_GET['company'];
 	$tel = $_GET['tel'];
 	$address = $_GET['address'];
-	echo "$cid $company $tel $address";
-	$sql = "UPDATE `storage`.`company` SET `company` = '$company', `tel` = '$tel', `address` = '$address', `createDate` = CURRENT_TIMESTAMP WHERE `company`.`cid` = $cid;";
+	$balanceday = $_GET['balanceday'];
+//	echo "$cid $company $tel $address";
+	$sql = "UPDATE `storage`.`company` SET `company` = '$company', `tel` = '$tel', `address` = '$address', `createDate` = CURRENT_TIMESTAMP, `balanceday` = '$balanceday' WHERE `company`.`cid` = $cid;";
 	query($sql);
 }

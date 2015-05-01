@@ -40,8 +40,8 @@
 	</div>
 	<div class="row">
 		<div class="col-md-6 lead">客戶名稱: <span id="clientTitle">null</span></div>
-		<div class="col-md-3 text-right lead">出貨日期: </div>
-		<div class="col-md-3"><input type="text" class="form-control datepicker" style="padding-left: 10px;" placeholder="選擇出貨日期" readonly/><input type="hidden" name="deliveryDate" value="" id="deliveryDate"/></div>
+		<div class="col-md-3 text-right lead">進貨日期: </div>
+		<div class="col-md-3"><input type="text" class="form-control datepicker" style="padding-left: 10px;" readonly/><input type="hidden" name="incomeDate" value="" id="incomeDate"/></div>
 	</div>
 	<br/>
 	<table class="table table-bordered" id="deliverTable">
@@ -54,19 +54,9 @@
 			<th class="col-md-1 text-right"><input class="btn btn-primary" type="button" value="+" onclick="addDelRow(this, 'deliverTable', 'top_add')"/></th>
 		</tr>
 		<tr>
-			<td colspan="6">
-				<div>
-					<div class="col-md-1 col-sm-1" style="display:none;">
-						<strong onclick="$('#commentBlock').toggle();">備註</strong>
-					</div>
-					<div class="col-md-3 col-sm-3" id="commentBlock" style="display:none;">
-						<textarea name="comments" id="comments" cols="50" rows="5" class="form-control"></textarea>
-					</div>
-					<div class="text-right">
-						<input type="button" class="btn btn-success" value="儲存" onclick="save();"/>&nbsp;
-						<input type="button" class="btn btn-success" value="列印" onclick="save('print')"/>
-					</div>
-				</div>
+			<td colspan="6" class="text-right">
+				<input type="button" class="btn btn-success" value="儲存" onclick="if(confirm('儲存出貨單,並返回聯絡人列表')){save();}"/>&nbsp;
+				<!--<input type="button" class="btn btn-success" value="列印" onclick="save('print')"/>-->
 			</td>
 		</tr>
 	</table>
@@ -83,44 +73,49 @@
 //		console.info('name ',getByName('name').length);
 		if(getByName('name').length)
 		{
-			if(confirm('儲存出貨單,並返回聯絡人列表')) {
-				len = getByName('name').length - 1;
-				$.each(getByName('name'), function (k, v) {
+			len = getByName('name').length - 1;
+			$.each(getByName('name'), function (k, v)
+			{
 //			console.info('k ',k, ' v ', v.value);
-					if (_each) {
-						if (v.value == '') {
-							getByName('name')[k].focus();
-							alert('品名不可為空!');
-							_each = false;
-						}
-						else {
-							$.get('action.php?' + $.param({
-								action: 'delivery',
-								method: 'add',
-								cid: queryparser().cid,
-								sid: queryparser().sid,
-								uniqid: uniqid,
-								deliveryDate: getByName('deliveryDate')[0].value,
-								qty: getByName('qty')[k].value,
-								spec: getByName('spec')[k].value,
-								unit: getByName('unit')[k].value,
-								weight: getByName('weight')[k].value,
-								item: v.value
-							}), function (xhr) {
-								if (len == k) {
-									if (action == 'print') {
-										window.open('order.html?' + $.param({uniqid: uniqid}));
-										location.href = 'deliverylist.html';
-									}
-									else {
-										location.href = 'index_subclient.html?' + $.param({cid: queryparser().cid});
-									}
-								}
-							});
-						}
+				if(_each) {
+					if (v.value == '')
+					{
+						getByName('name')[k].focus();
+						alert('品名不可為空!');
+						_each = false;
 					}
-				});
-			}
+					else
+					{
+						$.get('action.php?' + $.param({
+							action: 'delivery',
+							method: 'add',
+							type: 'income',
+							cid: queryparser().cid,
+							sid: queryparser().sid,
+							uniqid: uniqid,
+							deliveryDate: getByName('incomeDate')[0].value,
+							qty: getByName('qty')[k].value,
+							spec: getByName('spec')[k].value,
+							unit: getByName('unit')[k].value,
+							weight: getByName('weight')[k].value,
+							item: v.value
+						}),function(xhr){
+							if(len == k)
+							{
+								if(action == 'print')
+								{
+									window.open('order.html?' + $.param({uniqid:uniqid}));
+									location.href='deliverylist.html';
+								}
+								else
+								{
+									location.href='index_subclient.html?'+ $.param({cid:queryparser().cid});
+								}
+							}
+						});
+					}
+				}
+			});
 		}
 		else
 		{
@@ -135,13 +130,13 @@
 //			console.info('xhr', xhr);
 			getById('clientTitle').innerHTML = xhr[0].company;
 		},'json');
-		getById('deliveryDate').value = new Date().getFullYear() + '/' + (new Date().getMonth()+1)  + '/' + new Date().getDate();
+		getById('incomeDate').value = new Date().getFullYear() + '/' + (new Date().getMonth()+1)  + '/' + new Date().getDate();
 		$('.datepicker')[0].value = new Date().getFullYear() + ' 年 ' + (new Date().getMonth()+1)  + ' 月 ' + new Date().getDate() + ' 日';
-		$('.datepicker').datepicker({format:'yyyy 年 m 月 d 日'}).on('hide', function(e){
+		$('.datepicker').datepicker({format:'yyyy 年 m 月 d 日'}).on('changeDate', function(e){
 //			console.info('e ',e);
 			if(e.dates.length)
 			{
-				getById('deliveryDate').value = new Date(e.date).getFullYear() + '/' + (new Date(e.date).getMonth()+1) + '/' + new Date(e.date).getDate();
+				getById('incomeDate').value = new Date(e.date).getFullYear() + '/' + (new Date(e.date).getMonth()+1) + '/' + new Date(e.date).getDate();
 			}
 		});
 	});

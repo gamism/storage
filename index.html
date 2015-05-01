@@ -58,6 +58,19 @@
 						<td><input type="text" class="form-control" id="newAddr"/></td>
 					</tr>
 					<tr>
+						<th class="col-md-2 text-right bg-info">結帳日</th>
+						<td><select name="balanceday" id="balanceday" class="form-control">
+							<script>
+								for(var i=1;i<=31;i++)
+								{
+									document.write('<option value="'+i+'">'+i+'</option>')
+								}
+								getById('balanceday').value=25;
+							</script>
+						</select>
+							</td>
+					</tr>
+					<tr>
 						<td colspan="2" class="text-right"><button class="btn btn-success" onclick="company.addCustomer()">新增客戶</button></td>
 					</tr>
 				</table>
@@ -65,12 +78,13 @@
 		</div>
 		<table class="table table-bordered" id="customerListTable">
 			<tr>
-				<th class="col-md-2">公司名稱</th>
-				<th class="col-md-1">電話</th>
-				<th class="col-md-4">地址</th>
+				<th>公司名稱</th>
+				<th>電話</th>
+				<th>地址</th>
+				<th nowrap>結帳日</th>
 				<th nowrap>聯絡人</th>
 				<th style="width:200px;" nowrap>月結</th>
-				<th class="col-md-2"></th>
+				<th></th>
 			</tr>
 			<tbody id="customerList"></tbody>
 		</table>
@@ -84,7 +98,7 @@
 			{
 				getById('customerList').innerHTML="";
 				$.each(info, function(k, v){
-					company.showCustomer(v.company, v.tel, v.address, v.cid);
+					company.showCustomer(v.company, v.tel, v.address, v.cid, v.balanceday);
 					getByName('month')[k].value = new Date().getMonth() + 1 + ' 月';
 					getByName('realMonth')[k].value = new Date().getMonth() + 1;
 					getByName('realYear')[k].value = new Date().getFullYear();
@@ -113,7 +127,8 @@
 				method: 'add',
 				company: com.value,
 				tel: tel.value,
-				address: addr.value
+				address: addr.value,
+				balanceday: getById('balanceday').value
 			}), function (xhr)
 			{
 				//reset
@@ -136,7 +151,7 @@
 		var row = _this.parentNode.parentNode.parentNode.rowIndex - 1;
 		location.href='list2.html?'+ $.param({cid:id, month:getByName('realMonth')[row].value, year:getByName('realYear')[row].value});
 	};
-	company.showCustomer = function(com, tel, addr, id)
+	company.showCustomer = function(com, tel, addr, id, balanceday)
 	{
 		var str='',list;
 		list = $('#customerList');
@@ -145,6 +160,7 @@
 		'<td>'+com+'</td>' +
 		'<td>'+tel+'</td>' +
 		'<td>'+addr+'</td>' +
+		'<td>'+balanceday+'</td>' +
 		'<td><input type="button" class="btn btn-primary" value="聯絡人列表" onclick="location.href=\'index_subclient.html?'+ $.param({cid:id})+'\'"/></td>' +
 		'<td><span class="form-inline"><input type="button" class="btn btn-primary" value="月結報表" onclick="company.goMonth('+ id +', this)"/>&nbsp;<input style="width:70px;" name="month" type="text" class="datepicker_getMonth form-control text-center" readonly/><input type="hidden" name="realMonth"/><input type="hidden" name="realYear"/></td>' +
 		'<td><input type="button" class="btn btn-danger" value="編輯" onclick="company.editCustomer(this,'+id+')"/> <input type="button" class="btn btn-danger" value="刪除" onclick="if(confirm(\'Delete this company?\')){addDelRow(this, \'customerListTable\', \'del\');company.delCustomer('+id+')}"/></span></td>' +
@@ -166,24 +182,37 @@
 			getById('customerListTable').rows[rowIdx].cells[1].innerHTML = '<input class="form-control" type="text" value="'+tmp+'">';
 			tmp = getById('customerListTable').rows[rowIdx].cells[2].innerHTML;
 			getById('customerListTable').rows[rowIdx].cells[2].innerHTML = '<input class="form-control" type="text" value="'+tmp+'">';
+			tmp = getById('customerListTable').rows[rowIdx].cells[3].innerHTML;
+			var balanceDayStr = '';
+			for(var i=1;i<=31;i++)
+			{
+				balanceDayStr += '<option value="'+i+'" '+((tmp == i)?" selected":"")+'>'+i+'</option>';
+			}
+			getById('customerListTable').rows[rowIdx].cells[3].innerHTML = '<select class="form-control">'+balanceDayStr+'</select>';
 		}
 		else
 		{
 			$(row).attr('class', 'btn btn-danger');
 			$(row).attr('value', '編輯');
 
-			console.info('child ',getById('customerListTable').rows[rowIdx].cells[0].childNodes[0].value);
+//			console.info('child ',getById('customerListTable').rows[rowIdx].cells[0].childNodes[0].value);
 			val = getById('customerListTable').rows[rowIdx].cells[0].childNodes[0].value;
 			valueSet.push(val);
 			getById('customerListTable').rows[rowIdx].cells[0].innerHTML = val;
+
 			val = getById('customerListTable').rows[rowIdx].cells[1].childNodes[0].value;
 			valueSet.push(val);
 			getById('customerListTable').rows[rowIdx].cells[1].innerHTML = val;
+
 			val = getById('customerListTable').rows[rowIdx].cells[2].childNodes[0].value;
 			valueSet.push(val);
 			getById('customerListTable').rows[rowIdx].cells[2].innerHTML = val;
-			console.info('valueSet ',valueSet);
-			$.get('action.php?' + $.param({action:'company', method:'edit', cid:id, company:valueSet[0],tel:valueSet[1],address:valueSet[2]}));
+
+			val = getById('customerListTable').rows[rowIdx].cells[3].childNodes[0].value;
+			valueSet.push(val);
+			getById('customerListTable').rows[rowIdx].cells[3].innerHTML = val;
+//			console.info('valueSet ',valueSet);
+			$.get('action.php?' + $.param({action:'company', method:'edit', cid:id, company:valueSet[0],tel:valueSet[1],address:valueSet[2],balanceday:valueSet[3]}));
 		}
 	};
 	company.delCustomer = function(id)

@@ -78,6 +78,7 @@
 				<th class="col-md-2">聯絡人</th>
 				<th class="col-md-4">地址</th>
 				<th nowrap>出貨單</th>
+				<th nowrap>進貨單</th>
 				<th class="col-md-2"></th>
 			</tr>
 			<tbody id="customerList"></tbody>
@@ -150,6 +151,7 @@
 		'<td>'+reciver+'</td>' +
 		'<td>'+addr+'</td>' +
 		'<td><input type="button" class="btn btn-primary" value="產生出貨單" onclick="location.href=\'delivery.html?'+ $.param({sid:id,cid:cid})+'\'"/></td>' +
+		'<td><input type="button" class="btn btn-primary" value="產生進貨單" onclick="location.href=\'income.html?'+ $.param({sid:id,cid:cid})+'\'"/></td>' +
 		'<td><input type="button" class="btn btn-danger" value="編輯" onclick="subclient.editCustomer(this,'+id+')"/> <input type="button" class="btn btn-danger" value="刪除" onclick="if(confirm(\'Delete this company?\')){addDelRow(this, \'customerListTable\', \'del\');subclient.delCustomer('+id+')}"/></td>' +
 		'</tr>';
 
