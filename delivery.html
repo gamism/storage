@@ -56,11 +56,11 @@
 		<tr>
 			<td colspan="6">
 				<div>
-					<div class="col-md-1 col-sm-1" style="display:none;">
+					<div class="col-md-1 col-sm-1">
 						<strong onclick="$('#commentBlock').toggle();">備註</strong>
 					</div>
-					<div class="col-md-3 col-sm-3" id="commentBlock" style="display:none;">
-						<textarea name="comments" id="comments" cols="50" rows="5" class="form-control"></textarea>
+					<div class="col-md-2 col-sm-2" id="commentBlock" style="">
+						<textarea style="resize: none;" name="comments" id="comments" cols="30" rows="5" class="form-control"></textarea>
 					</div>
 					<div class="text-right">
 						<input type="button" class="btn btn-success" value="儲存" onclick="save();"/>&nbsp;
@@ -85,7 +85,8 @@
 		{
 			if(confirm('儲存出貨單,並返回聯絡人列表')) {
 				len = getByName('name').length - 1;
-				$.each(getByName('name'), function (k, v) {
+				$.each(getByName('name'), function (k, v)
+				{
 //			console.info('k ',k, ' v ', v.value);
 					if (_each) {
 						if (v.value == '') {
@@ -93,7 +94,8 @@
 							alert('品名不可為空!');
 							_each = false;
 						}
-						else {
+						else
+						{
 							$.get('action.php?' + $.param({
 								action: 'delivery',
 								method: 'add',
@@ -120,6 +122,12 @@
 						}
 					}
 				});
+				$.get('action.php?' + $.param({
+					action: 'delivery',
+					method: 'comments',
+					uniqid: uniqid,
+					comments: getById('comments').value
+				}));
 			}
 		}
 		else

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <head lang="zh-tw">
-<head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -162,9 +161,12 @@
 			'<td>'+ v.spec+'</td>' +
 			'<td>'+ v.qty+'</td>' +
 			'<td>'+ v.unit+'</td>' +
-			'<td>'+ v.weight+'</td>' +
-			'<td style="border-left: 1px solid black;">&nbsp;</td>' +
-			'</tr>';
+			'<td>'+ v.weight+'</td>';
+			if(k==0)
+			{
+				str += '<td style="border-left: 1px solid black; vertical-align: top;" rowspan="7" id="comments">&nbsp;</td>';
+			}
+			str += '</tr>';
 			$('#deliveryList').append(str);
 			str = '';
 		});
@@ -180,13 +182,16 @@
 				'<td>&nbsp;</td>' +
 				'<td>&nbsp;</td>' +
 				'<td>&nbsp;</td>' +
-				'<td style="border-left: 1px solid black;">&nbsp;</td>' +
+//				'<td style="border-left: 1px solid black;">&nbsp;</td>' +
 				'</tr>';
 				$('#deliveryList').append(str);
 				str = '';
 			}
 		}
-		window.print();
+		$.get('action.php?'+ $.param({action:'comments',uniqid:queryparser().uniqid}), function(xhr){
+			getById('comments').innerHTML = ("<pre>" + xhr[0].comment + "</pre>") || "";
+			window.print();
+		}, 'json');
 	}, 'json');
 </script>
 </body>

@@ -61,12 +61,27 @@ if($action)
 		case 'order':
 			getOrder();
 			break;
+		case 'comments':
+			getComments();
+			break;
 		case 'monthreport':
 			monthReport();
 			break;
 		default:
 			break;
 	}
+}
+function getComments()
+{
+	$uniqid = $_GET['uniqid'];
+
+	$sql="select comments.* from comments where comments.uniqid = '$uniqid'";
+	$ret = query($sql);
+	$list = [];
+	while ($v = mysql_fetch_array($ret)) {
+		array_push($list, $v);
+	}
+	print(json_encode($list));
 }
 
 function monthReport()
@@ -100,7 +115,7 @@ where subclient.sid = delivery.sid and delivery.uniqid = '$uniqid'";
 
 function getUniqid()
 {
-	echo uniqid();
+	echo time();
 }
 
 function delivery()
@@ -117,8 +132,14 @@ function delivery()
 	$method = $_GET['method'];
 	$date = $_GET['date'];
 	$type = $_GET['type'];
+	$comments = $_GET['comments'];
 	switch($method)
 	{
+		case 'comments':
+			$sql = "INSERT INTO storage.comments (uniqid, comment) VALUES ('$uniqid', '$comments');
+";
+			query($sql);
+			break;
 		case 'add':
 			if($type == "income")
 			{
@@ -141,6 +162,8 @@ function delivery()
 			break;
 		case 'del':
 			$sql = "DELETE FROM `delivery` WHERE delivery.uniqid = '$uniqid'";
+			query($sql);
+			$sql = "DELETE FROM `comments` WHERE comments.uniqid = '$uniqid'";
 			query($sql);
 			break;
 		case 'edit':

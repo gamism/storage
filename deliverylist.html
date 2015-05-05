@@ -88,9 +88,10 @@
 	{
 		if(confirm('刪除此筆出貨單?') && id.length)
 		{
-			$.get('action.php?' + $.param({action: 'delivery', method: 'del', uniqid: id}));
+			$.get('action.php?' + $.param({action: 'delivery', method: 'del', uniqid: id}),  function(){
+				getlist(getById('deliveryDate').value);
+			});
 		}
-		getlist(getById('deliveryDate').value);
 	}
  	function getlist(date)
 	{
