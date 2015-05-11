@@ -58,7 +58,7 @@ function genRow(id)
 	{
 		s += '<tr>' +
 		'<td>' +
-		'<div class="input-group"><span class="input-group-addon">品名</span><input type="text" class="form-control" name="item"/></div>' +
+		'<div class="input-group"><span class="input-group-addon">品名</span><input type="text" class="form-control" name="item"/><span class="input-group-addon">計價</span><select name="count_type" class="form-control" style="width:100px;"><option value="0">重量</option><option value="1">數量</option></select></div>' +
 		'<div class="input-group"><span class="input-group-addon">規格</span><input type="text" class="form-control" name="spec"/><span class="input-group-addon">單位</span><input name="unit" type="text" class="form-control"/></div>' +
 		'</td>' +
 		'<td style="width:70px;">' +

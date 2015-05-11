@@ -58,7 +58,8 @@
 		</table>
 	</div>
 	<div class="text-right">
-		<button class="btn btn-success" onclick="savechanges()">儲存</button>&nbsp;<button class="btn btn-success">儲存並列印</button>
+		<!--<button class="btn btn-success" onclick="savechanges()">儲存</button>-->
+		<!--<button class="btn btn-success" onclick="savechanges()">儲存</button>&nbsp;<button class="btn btn-success">儲存並列印</button>-->
 	</div>
 	<div class="modal fade">
 		<div class="modal-lg modal-dialog">
@@ -75,6 +76,13 @@
 	function savechanges()
 	{
 		$('.modal').modal('show');
+		$.each(getByName('did'),function(k,v){
+			console.info('did ', v.value);
+			console.info('item ', getByName('item')[k].value);
+			$.ajax({url:'action.php',data: $.param({action:'',did: v.value}),success:function(xhr){
+				console.info('xhr ', xhr);
+			},dataType:'text',async:false})
+		});
 		$.get('action.php?'+ $.param({action:'getTitle',cid:queryparser().cid}),function(){
 			$('.modal').modal('hide');
 		});

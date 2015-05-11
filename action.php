@@ -133,8 +133,12 @@ function delivery()
 	$date = $_GET['date'];
 	$type = $_GET['type'];
 	$comments = $_GET['comments'];
+	$did = $_GET['did'];
 	switch($method)
 	{
+		case 'monthReportEdit':
+			echo $did;
+			break;
 		case 'comments':
 			$sql = "INSERT INTO storage.comments (uniqid, comment) VALUES ('$uniqid', '$comments');
 ";
