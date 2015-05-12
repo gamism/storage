@@ -155,22 +155,42 @@
 		}
 	}
 	$(document).ready(function(){
-		$.get('action.php?'+ $.param({action:'getUniquid'}), function(xhr){
-			uniqid = xhr;
-		});
-		$.get('action.php?'+ $.param({action:'getTitle',sid:queryparser().sid}), function(xhr){
+		//edit
+		if(queryparser().uniqid) {
+			$.ajax({
+				async: false,
+				dataType: "json",
+				url: "action.php",
+				data: $.param({action: 'order', uniqid: queryparser().uniqid}),
+				success: function (xhr) {
+//					console.info('xhr', xhr);
+					uniqid = queryparser().uniqid;
+					var x = xhr[0];
+					getById('deliveryDate').value = x.deliveryDate;
+					$('.datepicker')[0].value = x.deliveryDate.split('/')[0] + ' 年 ' + x.deliveryDate.split('/')[1]  + ' 月 ' + x.deliveryDate.split('/')[2] + ' 日';
+				}
+			});
+		}
+		else
+		//add
+		{
+			$.get('action.php?'+ $.param({action:'getUniquid'}), function(xhr){
+				uniqid = xhr;
+			});
+			$.get('action.php?'+ $.param({action:'getTitle',sid:queryparser().sid}), function(xhr){
 //			console.info('xhr', xhr);
-			getById('clientTitle').innerHTML = xhr[0].company;
-		},'json');
-		getById('deliveryDate').value = new Date().getFullYear() + '/' + (new Date().getMonth()+1)  + '/' + new Date().getDate();
-		$('.datepicker')[0].value = new Date().getFullYear() + ' 年 ' + (new Date().getMonth()+1)  + ' 月 ' + new Date().getDate() + ' 日';
-		$('.datepicker').datepicker({format:'yyyy 年 m 月 d 日'}).on('hide', function(e){
+				getById('clientTitle').innerHTML = xhr[0].company;
+			},'json');
+			getById('deliveryDate').value = new Date().getFullYear() + '/' + (new Date().getMonth()+1)  + '/' + new Date().getDate();
+			$('.datepicker')[0].value = new Date().getFullYear() + ' 年 ' + (new Date().getMonth()+1)  + ' 月 ' + new Date().getDate() + ' 日';
+			$('.datepicker').datepicker({format:'yyyy 年 m 月 d 日'}).on('changeDate', function(e){
 //			console.info('e ',e);
-			if(e.dates.length)
-			{
-				getById('deliveryDate').value = new Date(e.date).getFullYear() + '/' + (new Date(e.date).getMonth()+1) + '/' + new Date(e.date).getDate();
-			}
-		});
+				if(e.dates.length)
+				{
+					getById('deliveryDate').value = new Date(e.date).getFullYear() + '/' + (new Date(e.date).getMonth()+1) + '/' + new Date(e.date).getDate();
+				}
+			});
+		}
 	});
 </script>
 </body>
