@@ -83,7 +83,7 @@
 //		console.info('name ',getByName('name').length);
 		if(getByName('name').length)
 		{
-			if(confirm('儲存出貨單,並返回聯絡人列表')) {
+			if(confirm((action=="print")?"列印出貨單?":'儲存出貨單,並返回聯絡人列表?')) {
 				len = getByName('name').length - 1;
 				$.each(getByName('name'), function (k, v)
 				{
@@ -109,25 +109,44 @@
 								weight: getByName('weight')[k].value,
 								item: v.value
 							}), function (xhr) {
-								if (len == k) {
-									if (action == 'print') {
-										window.open('order.html?' + $.param({uniqid: uniqid}));
-										location.href = 'deliverylist.html';
+								if (len == k)
+								{
+									if(getById('comments').value.length >= 1)
+									{
+										$.get('action.php?' + $.param({
+											action: 'delivery',
+											method: 'comments',
+											uniqid: uniqid,
+											comments: getById('comments').value
+										}), function(xhr) {
+											if (action == 'print')
+											{
+												window.open('order.html?' + $.param({uniqid: uniqid}));
+												location.href = 'deliverylist.html';
+											}
+											else
+											{
+												location.href = 'index_subclient.html?' + $.param({cid: queryparser().cid});
+											}
+										});
 									}
-									else {
-										location.href = 'index_subclient.html?' + $.param({cid: queryparser().cid});
+									else
+									{
+										if (action == 'print')
+										{
+											window.open('order.html?' + $.param({uniqid: uniqid}));
+											location.href = 'deliverylist.html';
+										}
+										else
+										{
+											location.href = 'index_subclient.html?' + $.param({cid: queryparser().cid});
+										}
 									}
 								}
 							});
 						}
 					}
 				});
-				$.get('action.php?' + $.param({
-					action: 'delivery',
-					method: 'comments',
-					uniqid: uniqid,
-					comments: getById('comments').value
-				}));
 			}
 		}
 		else
