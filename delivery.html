@@ -155,6 +155,10 @@
 		}
 	}
 	$(document).ready(function(){
+		$.getJSON('action.php?'+ $.param({action:'getTitle',sid:queryparser().sid}), function(xhr){
+//			console.info('xhr', xhr);
+			getById('clientTitle').innerHTML = xhr[0].company;
+		});
 		//edit
 		if(queryparser().uniqid) {
 			$.ajax({
@@ -165,9 +169,26 @@
 				success: function (xhr) {
 //					console.info('xhr', xhr);
 					uniqid = queryparser().uniqid;
+					$.getJSON('action.php?'+ $.param({action:'comments',uniqid:queryparser().uniqid}), function(xhr){
+						if(xhr[0])
+						{
+							getById('comments').value = xhr[0].comment;
+						}
+					});
 					var x = xhr[0];
 					getById('deliveryDate').value = x.deliveryDate;
 					$('.datepicker')[0].value = x.deliveryDate.split('/')[0] + ' 年 ' + x.deliveryDate.split('/')[1]  + ' 月 ' + x.deliveryDate.split('/')[2] + ' 日';
+					$.each(xhr, function(k,v){
+						addDelRow(this, 'deliverTable', 'top_add');
+//						console.info('k %d v ',k, v);
+						getByName('name')[k].value = v.item;
+						getByName('spec')[k].value = v.spec;
+						getByName('unit')[k].value = v.unit;
+						getByName('qty')[k].value = v.qty;
+						getByName('weight')[k].value = v.weight;
+						getByName('cid')[k].value = v.cid;
+					});
+
 				}
 			});
 		}
@@ -177,10 +198,6 @@
 			$.get('action.php?'+ $.param({action:'getUniquid'}), function(xhr){
 				uniqid = xhr;
 			});
-			$.get('action.php?'+ $.param({action:'getTitle',sid:queryparser().sid}), function(xhr){
-//			console.info('xhr', xhr);
-				getById('clientTitle').innerHTML = xhr[0].company;
-			},'json');
 			getById('deliveryDate').value = new Date().getFullYear() + '/' + (new Date().getMonth()+1)  + '/' + new Date().getDate();
 			$('.datepicker')[0].value = new Date().getFullYear() + ' 年 ' + (new Date().getMonth()+1)  + ' 月 ' + new Date().getDate() + ' 日';
 			$('.datepicker').datepicker({format:'yyyy 年 m 月 d 日'}).on('changeDate', function(e){

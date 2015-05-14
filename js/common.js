@@ -104,7 +104,7 @@ function genRow(id)
 		s += '<td><input name="unit" type="text" class="form-control"/></td>';
 		s += '<td><input name="qty" type="text" class="form-control"/></td>';
 		s += '<td><input name="weight" type="text" class="form-control"/></td>';
-		s += '<td nowrap class="text-right"><input class="btn btn-sm btn-primary" type="button" value="+" onclick="addDelRow(this, \''+id+'\', \'add\')"/> <input class="btn btn-sm btn-danger" type="button" value=" -" onclick="addDelRow(this, \''+id+'\', \'del\')"/></td>';
+		s += '<td nowrap class="text-right"><input type="hidden" name="cid"/><input class="btn btn-sm btn-primary" type="button" value="+" onclick="addDelRow(this, \''+id+'\', \'add\')"/> <input class="btn btn-sm btn-danger" type="button" value=" -" onclick="if(confirm(\'確定刪除嗎?\')){addDelRow(this, \''+id+'\', \'del\')}"/></td>';
 		s += '</tr>';
 	}
 	if(id == 'summary')
